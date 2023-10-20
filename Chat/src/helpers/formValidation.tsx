@@ -1,47 +1,55 @@
-import {FormActionType, IFormAction, IFormState} from '../@types/common';
+import {
+  FormActionType,
+  IFormAction,
+  IFormPayload,
+  IFormState,
+} from '../@types/common';
 
 export function formValidation(
   formState: IFormState,
   formDispatch: React.Dispatch<IFormAction>,
 ) {
+  for (const key in formState) {
+    let payload: IFormPayload;
+    let error: string = '';
+    const {value, inputValidationType} = formState[key];
+    if (inputValidationType === 'name') {
+      if (!value.length) {
+        error = 'the input field must not be empty';
+      }
+    }
+    if (inputValidationType === 'username') {
+      error = usernameValidation(value, 6);
+    }
+    if (inputValidationType === 'password') {
+      error = passwordValidation(value);
+    }
+    payload = {
+      key,
+      value: {
+        value,
+        error,
+        inputValidationType,
+      },
+    };
+    formDispatch({
+      type: FormActionType.error,
+      payload,
+    });
+  }
+}
+
+function usernameValidation(username: string, minimumLength: number): string {
+  if (username.length < minimumLength) {
+    return `username must be at least ${minimumLength} characters`;
+  }
+  return '';
+}
+
+function passwordValidation(password: string): string {
   const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,}$/;
-  const {username, password} = formState;
-  let payload = {};
-  if (username.length < 6) {
-    payload = {
-      errors: {
-        usernameError: 'username must be at least 6 characters',
-      },
-    };
-  } else {
-    payload = {
-      errors: {
-        usernameError: '',
-      },
-    };
-  }
-  console.log(payload);
-  formDispatch({
-    type: FormActionType.error,
-    payload,
-  });
   if (!regex.test(password)) {
-    payload = {
-      errors: {
-        passwordError:
-          'password must contain minimum eight characters, at least one uppercase letter, one lowercase letter and one number',
-      },
-    };
-  } else {
-    payload = {
-      errors: {
-        passwordError: '',
-      },
-    };
+    return 'password must contain minimum eight characters, at least one uppercase letter, one lowercase letter and one number';
   }
-  console.log(payload);
-  formDispatch({
-    type: FormActionType.error,
-    payload,
-  });
+  return '';
 }

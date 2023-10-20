@@ -32,15 +32,22 @@ function Form() {
   return (
     <ScrollView contentContainerStyle={styles.formContainer}>
       <Text style={styles.text}>Registration</Text>
-      <RegisterInputText placeholder={'Name'} inputType={'name'} />
-      <RegisterInputText placeholder={'username'} inputType={'username'} />
-      {formState.errors.usernameError && (
-        <Text>{formState.errors.usernameError}</Text>
-      )}
-      <RegisterInputText placeholder={'password'} inputType={'password'} />
-      {formState.errors.passwordError && (
-        <Text>{formState.errors.passwordError}</Text>
-      )}
+      <RegisterInputText
+        placeholder={'Name'}
+        inputValidationType={'name'}
+        inputKey={'name'}
+      />
+      <RegisterInputText
+        placeholder={'username'}
+        inputValidationType={'username'}
+        inputKey={'username'}
+      />
+      <RegisterInputText
+        placeholder={'password'}
+        inputValidationType={'password'}
+        inputKey={'password'}
+        secure={true}
+      />
       <RegisterButton
         title={'Register'}
         textStyle={textStyle}

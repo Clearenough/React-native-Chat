@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {StyleSheet, Text, TextInput, View} from 'react-native';
 import Animated, {
   interpolate,
@@ -6,15 +6,22 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import {FormActionType} from '../../../@types/common';
+import {FormActionType, IFormPayload} from '../../../@types/common';
 import {FormContext} from '../../../contexts/FormContext';
 
 interface Props {
   placeholder: string;
-  inputType: 'name' | 'username' | 'password';
+  inputValidationType: 'name' | 'username' | 'password';
+  inputKey: string;
+  secure?: boolean;
 }
 
-function RegisterInputText({placeholder, inputType}: Props) {
+function RegisterInputText({
+  placeholder,
+  inputValidationType,
+  inputKey,
+  secure,
+}: Props) {
   const {formState, formDispatch} = useContext(FormContext);
   const animation = useSharedValue(0);
   const transform = useAnimatedStyle(() => {
@@ -25,6 +32,21 @@ function RegisterInputText({placeholder, inputType}: Props) {
     };
   });
 
+  useEffect(() => {
+    const payload: IFormPayload = {
+      key: inputKey,
+      value: {
+        value: '',
+        error: '',
+        inputValidationType,
+      },
+    };
+    formDispatch({
+      type: FormActionType.value,
+      payload,
+    });
+  }, [formDispatch, inputKey, inputValidationType]);
+
   function onFocus() {
     animation.value = withTiming(1, {
       duration: 150,
@@ -32,7 +54,7 @@ function RegisterInputText({placeholder, inputType}: Props) {
   }
 
   function onBlur() {
-    if (formState[inputType]) {
+    if (formState[inputKey] && formState[inputKey].value) {
       return;
     }
     animation.value = withTiming(0, {
@@ -41,9 +63,17 @@ function RegisterInputText({placeholder, inputType}: Props) {
   }
 
   function onChangeText(text: string) {
+    const payload: IFormPayload = {
+      key: inputKey,
+      value: {
+        value: text,
+        error: '',
+        inputValidationType,
+      },
+    };
     formDispatch({
-      type: FormActionType[inputType],
-      payload: {[inputType]: text},
+      type: FormActionType.value,
+      payload,
     });
   }
 
@@ -52,13 +82,16 @@ function RegisterInputText({placeholder, inputType}: Props) {
       <Animated.View style={[styles.labelContainer, transform]}>
         <Text>{placeholder}</Text>
       </Animated.View>
-      <TextInput
-        style={styles.input}
-        onChangeText={onChangeText}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        secureTextEntry={inputType === 'password'}
-      />
+      <View>
+        <TextInput
+          style={styles.input}
+          onChangeText={onChangeText}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          secureTextEntry={secure}
+        />
+        {formState[inputKey]?.error && <Text>{formState[inputKey].error}</Text>}
+      </View>
     </View>
   );
 }

@@ -6,12 +6,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-const initValue: IFormState = {
-  name: '',
-  username: '',
-  password: '',
-  errors: {},
-};
+const initValue: IFormState = {};
 
 export const FormContext = React.createContext<IFormContext>({
   formState: initValue,
