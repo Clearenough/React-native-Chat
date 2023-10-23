@@ -8,9 +8,10 @@ import RegisterButton from '../common/RegisterButton';
 interface Props {
   children: React.ReactNode;
   buttonText: string;
+  additionalButton?: React.ReactNode;
 }
 
-function Form({children, buttonText}: Props) {
+function Form({children, buttonText, additionalButton}: Props) {
   const {formState, formDispatch} = useContext(FormContext);
 
   const textStyle: TextStyle = {
@@ -42,6 +43,7 @@ function Form({children, buttonText}: Props) {
         viewStyle={viewStyle}
         handler={handler}
       />
+      {additionalButton}
     </ScrollView>
   );
 }
