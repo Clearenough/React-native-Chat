@@ -2,15 +2,15 @@ import React from 'react';
 import {
   Keyboard,
   KeyboardAvoidingView,
-  StyleSheet,
-  TouchableWithoutFeedback,
   Platform,
+  StyleSheet,
   Text,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import RegisterInputText from '../../components/common/RegisterInputText';
 import FormContainer from '../../components/Form/FormContainer';
 
-function RegistrationScreen() {
+function LoginScreen() {
   return (
     <TouchableWithoutFeedback
       onPress={Keyboard.dismiss}
@@ -19,13 +19,8 @@ function RegistrationScreen() {
       <KeyboardAvoidingView
         style={styles.container}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-        <FormContainer buttonText="Register">
-          <Text style={styles.text}>Registration</Text>
-          <RegisterInputText
-            placeholder={'Name'}
-            inputValidationType={'name'}
-            inputKey={'name'}
-          />
+        <FormContainer buttonText="Sign In">
+          <Text style={styles.text}>Sign In</Text>
           <RegisterInputText
             placeholder={'username'}
             inputValidationType={'username'}
@@ -52,4 +47,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RegistrationScreen;
+export default LoginScreen;

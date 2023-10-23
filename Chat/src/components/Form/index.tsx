@@ -1,12 +1,16 @@
 import React, {useContext} from 'react';
-import {StyleSheet, Text, TextStyle, ViewStyle} from 'react-native';
+import {StyleSheet, TextStyle, ViewStyle} from 'react-native';
 import {ScrollView} from 'react-native';
 import {FormContext} from '../../contexts/FormContext';
 import {formValidation} from '../../helpers/formValidation';
 import RegisterButton from '../common/RegisterButton';
-import RegisterInputText from '../common/RegisterInputText';
 
-function Form() {
+interface Props {
+  children: React.ReactNode;
+  buttonText: string;
+}
+
+function Form({children, buttonText}: Props) {
   const {formState, formDispatch} = useContext(FormContext);
 
   const textStyle: TextStyle = {
@@ -31,25 +35,9 @@ function Form() {
 
   return (
     <ScrollView contentContainerStyle={styles.formContainer}>
-      <Text style={styles.text}>Registration</Text>
-      <RegisterInputText
-        placeholder={'Name'}
-        inputValidationType={'name'}
-        inputKey={'name'}
-      />
-      <RegisterInputText
-        placeholder={'username'}
-        inputValidationType={'username'}
-        inputKey={'username'}
-      />
-      <RegisterInputText
-        placeholder={'password'}
-        inputValidationType={'password'}
-        inputKey={'password'}
-        secure={true}
-      />
+      {children}
       <RegisterButton
-        title={'Register'}
+        title={buttonText}
         textStyle={textStyle}
         viewStyle={viewStyle}
         handler={handler}
