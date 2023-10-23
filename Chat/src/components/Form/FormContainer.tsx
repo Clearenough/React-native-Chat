@@ -2,10 +2,15 @@ import React from 'react';
 import Form from '.';
 import FormContextProvider from '../../contexts/FormContext';
 
-function FormContainer() {
+interface Props {
+  children: React.ReactNode;
+  buttonText: string;
+}
+
+function FormContainer({children, buttonText}: Props) {
   return (
     <FormContextProvider>
-      <Form />
+      <Form buttonText={buttonText}>{children}</Form>
     </FormContextProvider>
   );
 }
