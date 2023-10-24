@@ -52,3 +52,9 @@ export const InputTypeFormActionTypeAccordance = {
   username: 'SET_USERNAME',
   password: 'SET_PASSWORD',
 };
+
+export type RootStackParamList = {
+  Main: undefined;
+  Login: undefined;
+  Register: undefined;
+};
