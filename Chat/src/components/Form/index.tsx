@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {StyleSheet, TextStyle, ViewStyle} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {ScrollView} from 'react-native';
 import {FormContext} from '../../contexts/FormContext';
 import {formValidation} from '../../helpers/formValidation';
@@ -14,21 +14,6 @@ interface Props {
 function Form({children, buttonText, additionalButton}: Props) {
   const {formState, formDispatch} = useContext(FormContext);
 
-  const textStyle: TextStyle = {
-    fontSize: 20,
-    padding: 10,
-    color: '#FFDDE2',
-  };
-  const viewStyle: ViewStyle = {
-    width: '80%',
-    alignItems: 'center',
-    borderRadius: 10,
-    borderColor: 'black',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    backgroundColor: '#DE369D',
-  };
-
   function handler() {
     formValidation(formState, formDispatch);
     console.log(formState);
@@ -39,8 +24,8 @@ function Form({children, buttonText, additionalButton}: Props) {
       {children}
       <RegisterButton
         title={buttonText}
-        textStyle={textStyle}
-        viewStyle={viewStyle}
+        textStyle={styles.textStyle}
+        viewStyle={styles.viewStyle}
         handler={handler}
       />
       {additionalButton}
@@ -57,6 +42,20 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 40,
+  },
+  textStyle: {
+    fontSize: 20,
+    padding: 10,
+    color: '#FFDDE2',
+  },
+  viewStyle: {
+    width: '80%',
+    alignItems: 'center',
+    borderRadius: 10,
+    borderColor: 'black',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    backgroundColor: '#DE369D',
   },
 });
 

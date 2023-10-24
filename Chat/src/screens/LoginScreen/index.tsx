@@ -5,9 +5,7 @@ import {
   Platform,
   StyleSheet,
   Text,
-  TextStyle,
   TouchableWithoutFeedback,
-  ViewStyle,
 } from 'react-native';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import RegisterButton from '../../components/common/RegisterButton';
@@ -18,10 +16,6 @@ import {RootStackParamList} from '../../@types/common';
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 function LoginScreen({navigation}: Props) {
-  const textStyle: TextStyle = {};
-
-  const viewStyle: ViewStyle = {};
-
   function handler() {
     navigation.navigate('Register');
   }
@@ -39,8 +33,8 @@ function LoginScreen({navigation}: Props) {
           additionalButton={
             <RegisterButton
               title={"don't have an account? Sign up"}
-              textStyle={textStyle}
-              viewStyle={viewStyle}
+              textStyle={styles.textStyle}
+              viewStyle={styles.viewStyle}
               handler={handler}
             />
           }>
@@ -70,6 +64,8 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 40,
   },
+  textStyle: {},
+  viewStyle: {},
 });
 
 export default LoginScreen;
