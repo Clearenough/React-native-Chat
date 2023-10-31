@@ -7,16 +7,32 @@ import RegisterButton from '../common/RegisterButton';
 
 interface Props {
   children: React.ReactNode;
+  formButtonHandler: <T>(payload: T) => void;
   buttonText: string;
   additionalButton?: React.ReactNode;
 }
 
-function Form({children, buttonText, additionalButton}: Props) {
+function Form({
+  children,
+  formButtonHandler,
+  buttonText,
+  additionalButton,
+}: Props) {
   const {formState, formDispatch} = useContext(FormContext);
 
   function handler() {
-    formValidation(formState, formDispatch);
-    console.log(formState);
+    const isError = formValidation(formState, formDispatch);
+    if (isError) {
+      return;
+    }
+    let payload = {};
+    for (const key in formState) {
+      payload = {
+        ...payload,
+        [key]: formState[key].value,
+      };
+    }
+    formButtonHandler(payload);
   }
 
   return (

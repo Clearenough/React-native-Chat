@@ -8,6 +8,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import {FormActionType, IFormPayload} from '../../../@types/common';
 import {FormContext} from '../../../contexts/FormContext';
+import {validation} from '../../../helpers/formValidation';
 
 interface Props {
   placeholder: string;
@@ -63,12 +64,13 @@ function RegisterInputText({
   }
 
   function onChangeText(text: string) {
+    const error = validation[inputValidationType](text, 8);
     const payload: IFormPayload = {
       key: inputKey,
       value: {
+        ...formState[inputKey],
         value: text,
-        error: '',
-        inputValidationType,
+        error,
       },
     };
     formDispatch({

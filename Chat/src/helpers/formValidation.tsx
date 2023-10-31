@@ -8,7 +8,8 @@ import {
 export function formValidation(
   formState: IFormState,
   formDispatch: React.Dispatch<IFormAction>,
-) {
+): boolean {
+  console.log(formState);
   for (const key in formState) {
     let payload: IFormPayload;
     let error: string = '';
@@ -37,19 +38,46 @@ export function formValidation(
       payload,
     });
   }
+  console.log(formState, 'after dispatch');
+  const isError = isFormValidationFailed(formState);
+  console.log(isError, 'isError');
+  return isError;
 }
 
-function usernameValidation(username: string, minimumLength: number): string {
+export function isFormValidationFailed(formState: IFormState) {
+  for (const key in formState) {
+    if (formState[key].error !== '' || formState[key].value === '') {
+      return true;
+    }
+  }
+  return false;
+}
+
+export function usernameValidation(
+  username: string,
+  minimumLength: number,
+): string {
   if (username.length < minimumLength) {
     return `username must be at least ${minimumLength} characters`;
   }
   return '';
 }
 
-function passwordValidation(password: string): string {
+export function passwordValidation(password: string): string {
   const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,}$/;
   if (!regex.test(password)) {
-    return 'password must contain minimum eight characters, at least one uppercase letter, one lowercase letter and one number';
+    return 'password must contain minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special symbol';
   }
   return '';
 }
+
+export const validation = {
+  username: usernameValidation,
+  password: passwordValidation,
+  name: (name: string) => {
+    if (!name.length) {
+      return 'the input field must not be empty';
+    }
+    return '';
+  },
+};

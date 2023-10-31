@@ -4,14 +4,23 @@ import FormContextProvider from '../../contexts/FormContext';
 
 interface Props {
   children: React.ReactNode;
+  formButtonHandler: <T>(payload: T) => void;
   buttonText: string;
   additionalButton?: React.ReactNode;
 }
 
-function FormContainer({children, buttonText, additionalButton}: Props) {
+function FormContainer({
+  children,
+  formButtonHandler,
+  buttonText,
+  additionalButton,
+}: Props) {
   return (
     <FormContextProvider>
-      <Form buttonText={buttonText} additionalButton={additionalButton}>
+      <Form
+        buttonText={buttonText}
+        additionalButton={additionalButton}
+        formButtonHandler={formButtonHandler}>
         {children}
       </Form>
     </FormContextProvider>

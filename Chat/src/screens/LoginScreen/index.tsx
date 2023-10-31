@@ -30,6 +30,7 @@ function LoginScreen({navigation}: Props) {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <FormContainer
           buttonText="Sign In"
+          formButtonHandler={() => null}
           additionalButton={
             <RegisterButton
               title={"don't have an account? Sign up"}
