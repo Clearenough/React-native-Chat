@@ -7,17 +7,27 @@ import {
   Platform,
   Text,
 } from 'react-native';
-import {RootStackParamList} from '../../@types/common';
+import {IUserSignUp, RootStackParamList} from '../../@types/common';
 import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import RegisterButton from '../../components/common/RegisterButton';
 import RegisterInputText from '../../components/common/RegisterInputText';
 import FormContainer from '../../components/Form/FormContainer';
+import {useAppDispatch} from '../../hooks/storeHooks';
+import {registerUser} from '../../store/slices/userSlice';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Register'>;
 
 function RegistrationScreen({navigation}: Props) {
+  const dispatch = useAppDispatch();
+
   function handler() {
     navigation.navigate('Login');
+  }
+
+  function formButtonHandler<T>(payload: T) {
+    // console.log(user, 'user');
+    // console.log(payload, 'payload');
+    dispatch(registerUser(payload as IUserSignUp));
   }
 
   return (
@@ -30,6 +40,7 @@ function RegistrationScreen({navigation}: Props) {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <FormContainer
           buttonText="Register"
+          formButtonHandler={formButtonHandler}
           additionalButton={
             <RegisterButton
               title={'have an account? Sign in'}

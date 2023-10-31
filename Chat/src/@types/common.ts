@@ -59,13 +59,24 @@ export type RootStackParamList = {
   Register: undefined;
 };
 
+export interface IUser {
+  _id: string;
+  name: string;
+  username: string;
+  token: string;
+}
+
 export interface IUserSignUp {
   name: string;
-  login: string;
+  username: string;
   password: string;
 }
 
 export interface IUserSignIn {
-  login: string;
+  username: string;
   password: string;
+}
+
+export interface IServerError {
+  message: string;
 }
