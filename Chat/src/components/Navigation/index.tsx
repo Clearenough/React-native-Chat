@@ -12,8 +12,8 @@ function Navigation() {
 
   return (
     <Stack.Navigator>
-      {user.id ? (
-        <Stack.Group>
+      {user._id ? (
+        <Stack.Group screenOptions={{headerShown: false}}>
           <Stack.Screen name="Main" component={MainScreen} />
         </Stack.Group>
       ) : (

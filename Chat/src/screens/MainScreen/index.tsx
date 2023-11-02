@@ -1,8 +1,8 @@
 import React from 'react';
-import {Text} from 'react-native';
+import UsersList from '../../components/UsersList';
 
 function MainScreen() {
-  return <Text>Main</Text>;
+  return <UsersList />;
 }
 
 export default MainScreen;
