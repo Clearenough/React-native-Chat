@@ -5,6 +5,7 @@ import MainScreen from '../../screens/MainScreen';
 import LoginScreen from '../../screens/LoginScreen';
 import RegistrationScreen from '../../screens/RegistrationScreen';
 import {useAppSelector} from '../../hooks/storeHooks';
+import ChatRoom from '../../screens/ChatRoom';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 function Navigation() {
@@ -12,9 +13,10 @@ function Navigation() {
 
   return (
     <Stack.Navigator>
-      {user.id ? (
-        <Stack.Group>
+      {user._id ? (
+        <Stack.Group screenOptions={{headerShown: false}}>
           <Stack.Screen name="Main" component={MainScreen} />
+          <Stack.Screen name="ChatRoom" component={ChatRoom} />
         </Stack.Group>
       ) : (
         <Stack.Group screenOptions={{headerShown: false}}>

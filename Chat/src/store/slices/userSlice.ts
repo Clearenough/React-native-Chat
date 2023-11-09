@@ -76,7 +76,7 @@ export const loginUser = createAsyncThunk(
 
 export interface UserState {
   token: string;
-  id: string;
+  _id: string;
   username: string;
   status: string;
   error: string;
@@ -84,7 +84,7 @@ export interface UserState {
 
 const initialState: UserState = {
   token: '',
-  id: '',
+  _id: '',
   username: '',
   status: '',
   error: '',
@@ -98,7 +98,7 @@ export const userSlice = createSlice({
       state.token = action.payload;
     },
     setUserId: (state, action: PayloadAction<string>) => {
-      state.id = action.payload;
+      state._id = action.payload;
     },
   },
   extraReducers(builder) {
@@ -109,7 +109,7 @@ export const userSlice = createSlice({
       })
       .addMatcher(isResolved, (state, action) => {
         state.status = 'resolved';
-        state.id = action.payload._id;
+        state._id = action.payload._id;
         state.token = action.payload.token;
         state.username = action.payload.username;
       })

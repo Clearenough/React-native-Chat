@@ -25,8 +25,6 @@ function RegistrationScreen({navigation}: Props) {
   }
 
   function formButtonHandler<T>(payload: T) {
-    // console.log(user, 'user');
-    // console.log(payload, 'payload');
     dispatch(registerUser(payload as IUserSignUp));
   }
 
