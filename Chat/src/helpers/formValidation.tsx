@@ -9,7 +9,6 @@ export function formValidation(
   formState: IFormState,
   formDispatch: React.Dispatch<IFormAction>,
 ): boolean {
-  console.log(formState);
   for (const key in formState) {
     let payload: IFormPayload;
     let error: string = '';
@@ -38,9 +37,7 @@ export function formValidation(
       payload,
     });
   }
-  console.log(formState, 'after dispatch');
   const isError = isFormValidationFailed(formState);
-  console.log(isError, 'isError');
   return isError;
 }
 

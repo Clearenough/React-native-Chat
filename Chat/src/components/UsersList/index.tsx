@@ -1,13 +1,16 @@
+import {useNavigation} from '@react-navigation/native';
 import React, {useCallback, useEffect, useState} from 'react';
-import {FlatList, ListRenderItemInfo} from 'react-native';
+import {FlatList, ListRenderItemInfo, StyleSheet, View} from 'react-native';
 
 import {userBreakpoints} from '../../@constants/apiBreackpoint';
-import {IUser} from '../../@types/common';
+import {ChatRoomNavigationProp, IUser} from '../../@types/common';
+import {createChat} from '../../API/chatAPI';
 import {useAppSelector} from '../../hooks/storeHooks';
 import UserListItem from '../UserListItem';
 
 function UsersList() {
   const user = useAppSelector(state => state.user);
+  const navigation = useNavigation<ChatRoomNavigationProp>();
 
   const [users, setUsers] = useState<IUser[]>([]);
 
@@ -20,21 +23,44 @@ function UsersList() {
     fetchUsers();
   }, [user]);
 
+  const onPress = useCallback(
+    async (_id: string) => {
+      const chat = await createChat({firstId: user._id, secondId: _id});
+      navigation.navigate('ChatRoom', {
+        secondUserId: _id,
+        chatId: chat._id,
+      });
+    },
+    [navigation, user._id],
+  );
+
   const renderItem = useCallback(
     ({item}: ListRenderItemInfo<IUser>) => (
-      <UserListItem username={item.username} />
+      <UserListItem
+        username={item.username}
+        handler={() => onPress(item._id)}
+      />
     ),
-    [],
+    [onPress],
   );
 
   return (
-    <FlatList
-      renderItem={renderItem}
-      data={users}
-      keyExtractor={item => item._id}
-      horizontal
-    />
+    <View style={styles.container}>
+      <FlatList
+        renderItem={renderItem}
+        data={users}
+        keyExtractor={item => item._id}
+        ListFooterComponentStyle={styles.container}
+        horizontal
+      />
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 10,
+  },
+});
 
 export default UsersList;

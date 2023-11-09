@@ -1,15 +1,16 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {Pressable, StyleSheet, Text} from 'react-native';
 
 interface Props {
   username: string;
+  handler?: () => void;
 }
 
-function UserListItem({username}: Props) {
+function UserListItem({username, handler}: Props) {
   return (
-    <View style={styles.container}>
+    <Pressable style={styles.container} onPress={handler}>
       <Text style={styles.text}>{username.slice(0, 2)}</Text>
-    </View>
+    </Pressable>
   );
 }
 
@@ -19,6 +20,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     height: 40,
     width: 40,
+    marginHorizontal: 5,
     justifyContent: 'center',
     alignItems: 'center',
   },

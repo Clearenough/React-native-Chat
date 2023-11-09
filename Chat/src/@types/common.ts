@@ -1,3 +1,5 @@
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+
 export interface IFormErrors {
   [key: string]: string;
 }
@@ -54,10 +56,19 @@ export const InputTypeFormActionTypeAccordance = {
 };
 
 export type RootStackParamList = {
+  ChatRoom: {secondUserId: string; chatId: string};
   Main: undefined;
   Login: undefined;
   Register: undefined;
 };
+
+export type ChatRoomProps = NativeStackScreenProps<
+  RootStackParamList,
+  'ChatRoom',
+  'MyStack'
+>;
+
+export type ChatRoomNavigationProp = ChatRoomProps['navigation'];
 
 export interface IUser {
   _id: string;
@@ -79,4 +90,14 @@ export interface IUserSignIn {
 
 export interface IServerError {
   message: string;
+}
+
+export interface IChat {
+  members: [string, string];
+  _id: string;
+}
+
+export interface IChatCreate {
+  firstId: string;
+  secondId: string;
 }
