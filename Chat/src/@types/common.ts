@@ -101,3 +101,16 @@ export interface IChatCreate {
   firstId: string;
   secondId: string;
 }
+
+export interface IMessage {
+  _id: string;
+  chatId: string;
+  senderId: string;
+  text: string;
+}
+
+export interface IMessageCreate {
+  chatId: string;
+  senderId: string;
+  text: string;
+}

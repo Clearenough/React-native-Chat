@@ -1,5 +1,6 @@
 const baseUserUrl = 'http://localhost:3000/api/users';
 const baseChatUrl = 'http://localhost:3000/api/chats';
+const baseMessageUrl = 'http://localhost:3000/api/messages';
 
 export const userBreakpoints = {
   register: baseUserUrl + '/register',
@@ -12,4 +13,8 @@ export const chatBreakpoints = {
   createChat: baseChatUrl + '/',
   getUserChats: baseChatUrl + '/',
   getChat: baseChatUrl + '/find/',
+};
+
+export const messageBreakpoints = {
+  message: baseMessageUrl + '/',
 };

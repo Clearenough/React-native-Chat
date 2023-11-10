@@ -78,6 +78,7 @@ export interface UserState {
   token: string;
   _id: string;
   username: string;
+  name: string;
   status: string;
   error: string;
 }
@@ -86,6 +87,7 @@ const initialState: UserState = {
   token: '',
   _id: '',
   username: '',
+  name: '',
   status: '',
   error: '',
 };
@@ -107,11 +109,12 @@ export const userSlice = createSlice({
         state.status = 'pending';
         state.error = '';
       })
-      .addMatcher(isResolved, (state, action) => {
+      .addMatcher(isResolved, (state, action: PayloadAction<IUser>) => {
         state.status = 'resolved';
         state._id = action.payload._id;
         state.token = action.payload.token;
         state.username = action.payload.username;
+        state.name = action.payload.name;
       })
       .addMatcher(isError, (state, action: PayloadAction<string>) => {
         state.error = action.payload;

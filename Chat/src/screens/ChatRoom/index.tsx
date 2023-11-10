@@ -1,15 +1,18 @@
 import React, {useEffect, useState} from 'react';
-import {Text} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {userBreakpoints} from '../../@constants/apiBreackpoint';
 import {ChatRoomProps, IChat, IUser} from '../../@types/common';
 import {findChat} from '../../API/chatAPI';
 import ChatRoomHeader from '../../components/ChatRoomHeader';
+import MessagesList from '../../components/MesagesList';
+import MessageSender from '../../components/MessageSender/indes';
 import {useAppSelector} from '../../hooks/storeHooks';
 
 function ChatRoom({route}: ChatRoomProps) {
-  const {_id} = useAppSelector(state => state.user);
+  const user = useAppSelector(state => state.user);
   const [secondUser, setSecondUser] = useState<IUser>();
   const [chat, setChat] = useState<IChat>();
+  const [message, setMessage] = useState<string>('');
 
   const {secondUserId, chatId} = route.params;
 
@@ -24,13 +27,36 @@ function ChatRoom({route}: ChatRoomProps) {
 
   useEffect(() => {
     async function fetchChat() {
-      const chatInfo = await findChat({firstId: _id, secondId: secondUserId});
+      const chatInfo = await findChat({
+        firstId: user._id,
+        secondId: secondUserId,
+      });
       setChat(chatInfo);
     }
     fetchChat();
-  }, [_id, secondUserId]);
+  }, [user, secondUserId]);
 
-  return secondUser ? <ChatRoomHeader user={secondUser} /> : <Text>Hahah</Text>;
+  return secondUser ? (
+    <View style={styles.container}>
+      <ChatRoomHeader user={secondUser} />
+      <MessagesList firstUser={user} secondUser={secondUser} chatId={chatId} />
+      <MessageSender
+        chatId={chatId}
+        messageText={message}
+        setMessageText={setMessage}
+      />
+    </View>
+  ) : (
+    <Text>Hahah</Text>
+  );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'space-between',
+    padding: 5,
+  },
+});
 
 export default ChatRoom;
