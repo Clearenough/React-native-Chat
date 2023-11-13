@@ -1,6 +1,6 @@
 import React from 'react';
 import {useCallback, useEffect, useState} from 'react';
-import {FlatList, ListRenderItemInfo, View} from 'react-native';
+import {FlatList, ListRenderItemInfo, StyleSheet, View} from 'react-native';
 import {IMessage, IUser} from '../../@types/common';
 import {getMessages} from '../../API/messageAPI';
 import Message from '../Message';
@@ -13,8 +13,6 @@ interface Props {
 
 function MessagesList({firstUser, secondUser, chatId}: Props) {
   const [messages, setMessages] = useState<IMessage[]>([]);
-
-  console.log(firstUser, secondUser);
 
   useEffect(() => {
     async function fetchMessages() {
@@ -38,7 +36,7 @@ function MessagesList({firstUser, secondUser, chatId}: Props) {
   );
 
   return (
-    <View>
+    <View style={styles.container}>
       <FlatList
         renderItem={renderItem}
         data={messages}
@@ -47,5 +45,11 @@ function MessagesList({firstUser, secondUser, chatId}: Props) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
 
 export default MessagesList;

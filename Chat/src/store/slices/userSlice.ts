@@ -12,41 +12,17 @@ import {
   IUserSignUp,
 } from '../../@types/common';
 
-export const registerUser = createAsyncThunk(
-  'users/registerUser',
-  async function (userSignUp: IUserSignUp, {rejectWithValue}) {
-    const response = await fetch(userBreakpoints.register, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(userSignUp),
-    });
+export const userAuthentication = createAsyncThunk(
+  'users/userAuthentication',
+  async function (userSignUp: IUserSignUp | IUserSignIn, {rejectWithValue}) {
+    let url: string;
 
-    const data: IUser | IServerError | string = await response.json();
-
-    let message = '';
-    if (!response.ok) {
-      if (typeof data === 'string') {
-        message = data;
-      } else if ('message' in data) {
-        message = data.message;
-      }
+    if ('name' in userSignUp) {
+      url = userBreakpoints.register;
+    } else {
+      url = userBreakpoints.login;
     }
-
-    if (typeof data === 'string') {
-      return rejectWithValue(message);
-    }
-    if ('message' in data) {
-      return rejectWithValue(message);
-    }
-
-    return data;
-  },
-);
-
-export const loginUser = createAsyncThunk(
-  'users/loginUser',
-  async function (userSignUp: IUserSignIn, {rejectWithValue}) {
-    const response = await fetch(userBreakpoints.login, {
+    const response = await fetch(url, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(userSignUp),

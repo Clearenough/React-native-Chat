@@ -11,7 +11,7 @@ import {useAppSelector} from '../../hooks/storeHooks';
 function ChatRoom({route}: ChatRoomProps) {
   const user = useAppSelector(state => state.user);
   const [secondUser, setSecondUser] = useState<IUser>();
-  const [chat, setChat] = useState<IChat>();
+  const [_, setChat] = useState<IChat>();
   const [message, setMessage] = useState<string>('');
 
   const {secondUserId, chatId} = route.params;
@@ -47,7 +47,7 @@ function ChatRoom({route}: ChatRoomProps) {
       />
     </View>
   ) : (
-    <Text>Hahah</Text>
+    <Text>Error</Text>
   );
 }
 
