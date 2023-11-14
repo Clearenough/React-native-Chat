@@ -12,7 +12,7 @@ import RegisterButton from '../../components/common/RegisterButton';
 import RegisterInputText from '../../components/common/RegisterInputText';
 import FormContainer from '../../components/Form/FormContainer';
 import {IUserSignIn, RootStackParamList} from '../../@types/common';
-import {loginUser} from '../../store/slices/userSlice';
+import {userAuthentication} from '../../store/slices/userSlice';
 import {useAppDispatch} from '../../hooks/storeHooks';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
@@ -25,7 +25,7 @@ function LoginScreen({navigation}: Props) {
   }
 
   function formButtonHandler<T>(payload: T) {
-    dispatch(loginUser(payload as IUserSignIn));
+    dispatch(userAuthentication(payload as IUserSignIn));
   }
 
   return (
