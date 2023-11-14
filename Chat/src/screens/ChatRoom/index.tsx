@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {userBreakpoints} from '../../@constants/apiBreackpoint';
+import {userEndpoints} from '../../@constants/apiEndpoint';
 import {ChatRoomProps, IChat, IUser} from '../../@types/common';
 import {findChat} from '../../API/chatAPI';
 import ChatRoomHeader from '../../components/ChatRoomHeader';
@@ -18,7 +18,7 @@ function ChatRoom({route}: ChatRoomProps) {
 
   useEffect(() => {
     async function fetchUser() {
-      const response = await fetch(userBreakpoints.findUser + secondUserId);
+      const response = await fetch(userEndpoints.findUser + secondUserId);
       const data: IUser = await response.json();
       setSecondUser(data);
     }

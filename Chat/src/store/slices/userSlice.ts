@@ -4,7 +4,7 @@ import {
   PayloadAction,
   AnyAction,
 } from '@reduxjs/toolkit';
-import {userBreakpoints} from '../../@constants/apiBreackpoint';
+import {userEndpoints} from '../../@constants/apiEndpoint';
 import {
   IServerError,
   IUser,
@@ -18,9 +18,9 @@ export const userAuthentication = createAsyncThunk(
     let url: string;
 
     if ('name' in userSignUp) {
-      url = userBreakpoints.register;
+      url = userEndpoints.register;
     } else {
-      url = userBreakpoints.login;
+      url = userEndpoints.login;
     }
     const response = await fetch(url, {
       method: 'POST',

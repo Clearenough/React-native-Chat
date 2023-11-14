@@ -2,7 +2,7 @@ import {useNavigation} from '@react-navigation/native';
 import React, {useCallback, useEffect, useState} from 'react';
 import {FlatList, ListRenderItemInfo, StyleSheet, View} from 'react-native';
 
-import {userBreakpoints} from '../../@constants/apiBreackpoint';
+import {userEndpoints} from '../../@constants/apiEndpoint';
 import {ChatRoomNavigationProp, IUser} from '../../@types/common';
 import {createChat} from '../../API/chatAPI';
 import {useAppSelector} from '../../hooks/storeHooks';
@@ -16,7 +16,7 @@ function UsersList() {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const response = await fetch(userBreakpoints.getUsers);
+      const response = await fetch(userEndpoints.getUsers);
       const data: IUser[] = await response.json();
       setUsers(data.filter(item => item._id !== user._id));
     };

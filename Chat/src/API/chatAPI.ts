@@ -1,8 +1,8 @@
-import {chatBreakpoints} from '../@constants/apiBreackpoint';
+import {chatEndpoints} from '../@constants/apiEndpoint';
 import {IChat, IChatCreate} from '../@types/common';
 
 export async function createChat(ids: IChatCreate) {
-  const response = await fetch(chatBreakpoints.createChat, {
+  const response = await fetch(chatEndpoints.createChat, {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify(ids),
@@ -12,13 +12,13 @@ export async function createChat(ids: IChatCreate) {
 }
 
 export async function getUsersChats(userId: string) {
-  const response = await fetch(chatBreakpoints.getUserChats + userId);
+  const response = await fetch(chatEndpoints.getUserChats + userId);
   const data: IChat[] = await response.json();
   return data;
 }
 
 export async function findChat(ids: IChatCreate) {
-  const url = chatBreakpoints.getChat + ids.firstId + '/' + ids.secondId;
+  const url = chatEndpoints.getChat + ids.firstId + '/' + ids.secondId;
   const response = await fetch(url);
   const data: IChat = await response.json();
   return data;
