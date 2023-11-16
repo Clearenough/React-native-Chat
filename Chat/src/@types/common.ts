@@ -56,7 +56,7 @@ export const InputTypeFormActionTypeAccordance = {
 };
 
 export type RootStackParamList = {
-  ChatRoom: {secondUserId: string; chatId: string};
+  ChatRoom: {secondUserId: string};
   Main: undefined;
   Login: undefined;
   Register: undefined;

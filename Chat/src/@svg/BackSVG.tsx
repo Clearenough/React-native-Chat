@@ -5,7 +5,7 @@ interface Props {
   color: string;
 }
 
-function BackSVG({color}: Props) {
+function BackSVG({color}: Props): React.JSX.Element {
   return (
     <Svg
       xmlns="http://www.w3.org/2000/svg"

@@ -3,12 +3,14 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {FlatList, ListRenderItemInfo, StyleSheet, View} from 'react-native';
 
 import {userEndpoints} from '../../@constants/apiEndpoint';
-import {ChatRoomNavigationProp, IUser} from '../../@types/common';
-import {createChat} from '../../API/chatAPI';
-import {useAppSelector} from '../../hooks/storeHooks';
+import {ChatRoomNavigationProp, IChatCreate, IUser} from '../../@types/common';
+
+import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
+import {createChat} from '../../store/slices/chatSlice';
 import UserListItem from '../UserListItem';
 
 function UsersList() {
+  const dispatch = useAppDispatch();
   const user = useAppSelector(state => state.user);
   const navigation = useNavigation<ChatRoomNavigationProp>();
 
@@ -25,13 +27,16 @@ function UsersList() {
 
   const onPress = useCallback(
     async (_id: string) => {
-      const chat = await createChat({firstId: user._id, secondId: _id});
+      const newChat: IChatCreate = {
+        firstId: user._id,
+        secondId: _id,
+      };
+      await dispatch(createChat(newChat));
       navigation.navigate('ChatRoom', {
         secondUserId: _id,
-        chatId: chat._id,
       });
     },
-    [navigation, user._id],
+    [dispatch, navigation, user._id],
   );
 
   const renderItem = useCallback(

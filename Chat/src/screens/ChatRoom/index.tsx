@@ -14,7 +14,15 @@ function ChatRoom({route}: ChatRoomProps) {
   const [_, setChat] = useState<IChat>();
   const [message, setMessage] = useState<string>('');
 
-  const {secondUserId, chatId} = route.params;
+  const {secondUserId} = route.params;
+
+  const chatId = useAppSelector(state => {
+    return state.chat.chats.find(chat => {
+      return (
+        chat.members.includes(user._id) && chat.members.includes(secondUserId)
+      );
+    });
+  });
 
   useEffect(() => {
     async function fetchUser() {
@@ -36,12 +44,16 @@ function ChatRoom({route}: ChatRoomProps) {
     fetchChat();
   }, [user, secondUserId]);
 
-  return secondUser ? (
+  return secondUser && chatId ? (
     <View style={styles.container}>
       <ChatRoomHeader user={secondUser} />
-      <MessagesList firstUser={user} secondUser={secondUser} chatId={chatId} />
+      <MessagesList
+        firstUser={user}
+        secondUser={secondUser}
+        chatId={chatId._id}
+      />
       <MessageSender
-        chatId={chatId}
+        chatId={chatId._id}
         messageText={message}
         setMessageText={setMessage}
       />
