@@ -4,11 +4,12 @@ import {userEndpoints} from '../../@constants/apiEndpoint';
 import {ChatRoomProps, IChat, IUser} from '../../@types/common';
 import {findChat} from '../../API/chatAPI';
 import ChatRoomHeader from '../../components/ChatRoomHeader';
+import DeleteButton from '../../components/common/DeleteButton';
 import MessagesList from '../../components/MesagesList';
 import MessageSender from '../../components/MessageSender/indes';
 import {useAppSelector} from '../../hooks/storeHooks';
 
-function ChatRoom({route}: ChatRoomProps) {
+function ChatRoom({route, navigation}: ChatRoomProps) {
   const user = useAppSelector(state => state.user);
   const [secondUser, setSecondUser] = useState<IUser>();
   const [_, setChat] = useState<IChat>();
@@ -44,9 +45,24 @@ function ChatRoom({route}: ChatRoomProps) {
     fetchChat();
   }, [user, secondUserId]);
 
+  function backButtonHandler() {
+    navigation.navigate('Main');
+  }
+
+  function userListItemHandler() {
+    navigation.navigate('Profile', {
+      userId: secondUserId,
+    });
+  }
+
   return secondUser && chatId ? (
     <View style={styles.container}>
-      <ChatRoomHeader user={secondUser} />
+      <ChatRoomHeader
+        user={secondUser}
+        backButtonHandler={backButtonHandler}
+        userListItemHandler={userListItemHandler}
+        additionalButton={<DeleteButton />}
+      />
       <MessagesList
         firstUser={user}
         secondUser={secondUser}

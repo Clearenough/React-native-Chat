@@ -60,11 +60,18 @@ export type RootStackParamList = {
   Main: undefined;
   Login: undefined;
   Register: undefined;
+  Profile: {userId: string};
 };
 
 export type ChatRoomProps = NativeStackScreenProps<
   RootStackParamList,
   'ChatRoom',
+  'MyStack'
+>;
+
+export type ProfileRoomProps = NativeStackScreenProps<
+  RootStackParamList,
+  'Profile',
   'MyStack'
 >;
 
