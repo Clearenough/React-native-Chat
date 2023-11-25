@@ -43,7 +43,6 @@ export const getUsersChats = createAsyncThunk(
         return rejectWithValue(message);
       }
     }
-    console.log('loh');
     return data as IChat[];
   },
 );
@@ -100,7 +99,6 @@ export const chatSlice = createSlice({
     builder.addCase(
       getUsersChats.fulfilled,
       (state, action: PayloadAction<IChat[]>) => {
-        console.log(action.payload);
         state.chats = action.payload;
         state.status = 'resolved';
       },

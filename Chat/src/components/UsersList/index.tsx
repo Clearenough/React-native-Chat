@@ -1,9 +1,17 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {FlatList, ListRenderItemInfo, StyleSheet, View} from 'react-native';
 
 import {userEndpoints} from '../../@constants/apiEndpoint';
-import {ChatRoomNavigationProp, IChatCreate, IUser} from '../../@types/common';
+import {
+  ChatRoomNavigationProp,
+  IChatCreate,
+  IOnlineUser,
+  ISocketPayload,
+  IUser,
+  SocketActionType,
+} from '../../@types/common';
+import {SocketContext} from '../../contexts/SocketContext';
 
 import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
 import {createChat} from '../../store/slices/chatSlice';
@@ -11,10 +19,12 @@ import UserListItem from '../UserListItem';
 
 function UsersList() {
   const dispatch = useAppDispatch();
+  const {socketState, dispatch: contextDispatch} = useContext(SocketContext);
   const user = useAppSelector(state => state.user);
   const navigation = useNavigation<ChatRoomNavigationProp>();
 
   const [users, setUsers] = useState<IUser[]>([]);
+  // const [onlineUsers, setOnlineUsers] = useState()
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -24,6 +34,19 @@ function UsersList() {
     };
     fetchUsers();
   }, [user]);
+
+  useEffect(() => {
+    socketState.socket &&
+      socketState.socket.on('getOnlineUsers', (res: IOnlineUser[]) => {
+        const payload: ISocketPayload = {
+          onlineUsers: res,
+        };
+        contextDispatch({
+          type: SocketActionType.users,
+          payload,
+        });
+      });
+  }, [contextDispatch, socketState.socket]);
 
   const onPress = useCallback(
     async (_id: string) => {
@@ -40,13 +63,22 @@ function UsersList() {
   );
 
   const renderItem = useCallback(
-    ({item}: ListRenderItemInfo<IUser>) => (
-      <UserListItem
-        username={item.username}
-        handler={() => onPress(item._id)}
-      />
-    ),
-    [onPress],
+    ({item}: ListRenderItemInfo<IUser>) => {
+      const isUserOnline = socketState.onlineUsers.some(
+        u => u.userId === item._id,
+      );
+      return (
+        <UserListItem
+          username={item.username}
+          handler={() => onPress(item._id)}
+          displayOnlineStatus={isUserOnline}
+          isUserOnline={isUserOnline}
+          onlineStatusDisplayType={'mark'}
+        />
+      );
+    },
+
+    [onPress, socketState],
   );
 
   return (

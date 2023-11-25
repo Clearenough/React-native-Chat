@@ -1,6 +1,7 @@
-import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import React, {useContext} from 'react';
+import {StyleSheet, View} from 'react-native';
 import {IUser} from '../../@types/common';
+import {SocketContext} from '../../contexts/SocketContext';
 import BackButton from '../common/BackButton';
 import UserListItem from '../UserListItem';
 
@@ -17,12 +18,21 @@ function ChatRoomHeader({
   backButtonHandler,
   userListItemHandler,
 }: Props) {
+  const {socketState} = useContext(SocketContext);
+
   return (
     <View style={styles.container}>
       <BackButton handler={backButtonHandler} />
       <View style={styles.userContainer}>
-        <UserListItem username={user.username} handler={userListItemHandler} />
-        <Text>{user.username}</Text>
+        <UserListItem
+          username={user.username}
+          handler={userListItemHandler}
+          displayOnlineStatus={true}
+          isUserOnline={socketState.onlineUsers.some(
+            u => u.userId === user._id,
+          )}
+          onlineStatusDisplayType="text"
+        />
       </View>
       {additionalButton}
     </View>

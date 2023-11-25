@@ -35,7 +35,6 @@ export const getMessages = createAsyncThunk(
   async function (chatId: string, {rejectWithValue}) {
     const response = await fetch(messageEndpoints.message + chatId);
     const data: IMessage[] | IServerError | string = await response.json();
-    console.log('messages');
     let message = '';
     if (!response.ok) {
       if (typeof data === 'string' || 'message' in data) {

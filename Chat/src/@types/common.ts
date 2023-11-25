@@ -1,4 +1,5 @@
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {Socket} from 'socket.io-client';
 
 export interface IFormErrors {
   [key: string]: string;
@@ -26,14 +27,6 @@ export interface IFormState {
   [key: string]: IRegisterInput;
 }
 
-// export type IFormState2 = {
-//   [key: string]: string;
-// } & {
-//   errors: IFormErrors;
-// };
-
-// export type IFormPayload = Partial<IFormState>;
-
 export interface IFormPayload {
   key: string;
   value: IRegisterInput;
@@ -54,6 +47,39 @@ export const InputTypeFormActionTypeAccordance = {
   username: 'SET_USERNAME',
   password: 'SET_PASSWORD',
 };
+
+export interface ISocketContext {
+  socketState: ISocketState;
+  dispatch: React.Dispatch<ISocketAction>;
+}
+
+export interface ISocketState {
+  socket: null | Socket;
+  onlineUsers: IOnlineUser[];
+}
+
+export interface ISocketPayload {
+  socket?: Socket;
+  onlineUsers?: IOnlineUser[];
+}
+
+export interface ISocketAction {
+  type: SocketActionType;
+  payload: ISocketPayload;
+}
+
+export enum SocketActionType {
+  'socket' = 'SET_SOCKET',
+  'users' = 'SET_ONLINE_USERS',
+}
+
+// export type IFormState2 = {
+//   [key: string]: string;
+// } & {
+//   errors: IFormErrors;
+// };
+
+// export type IFormPayload = Partial<IFormState>;
 
 export type RootStackParamList = {
   ChatRoom: {secondUserId: string};
@@ -82,6 +108,11 @@ export interface IUser {
   name: string;
   username: string;
   token: string;
+}
+
+export interface IOnlineUser {
+  userId: string;
+  socketId: string;
 }
 
 export interface IUserSignUp {
@@ -120,4 +151,14 @@ export interface IMessageCreate {
   chatId: string;
   senderId: string;
   text: string;
+}
+
+export interface ServerToClientEvents {
+  noArg: () => void;
+  basicEmit: (a: number, b: string, c: Buffer) => void;
+  withAck: (d: string, callback: (e: number) => void) => void;
+}
+
+export interface ClientToServerEvents {
+  hello: () => void;
 }
