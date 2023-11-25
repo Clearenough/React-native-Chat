@@ -5,7 +5,7 @@ interface Props {
   color: string;
 }
 
-function DeleteSVG({color}: Props) {
+function DeleteSVG({color}: Props): React.JSX.Element {
   return (
     <Svg
       xmlns="http://www.w3.org/2000/svg"

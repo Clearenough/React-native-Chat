@@ -1,7 +1,8 @@
 import React from 'react';
 import {StyleSheet, TextInput, View} from 'react-native';
-import {createMessage} from '../../API/messageAPI';
-import {useAppSelector} from '../../hooks/storeHooks';
+import {IMessageCreate} from '../../@types/common';
+import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
+import {createMessage} from '../../store/slices/messageSlice';
 import SendButton from '../common/SendButton';
 
 interface Props {
@@ -12,9 +13,15 @@ interface Props {
 
 function MessageSender({chatId, messageText, setMessageText}: Props) {
   const {_id} = useAppSelector(state => state.user);
+  const dispatch = useAppDispatch();
 
-  async function handler() {
-    await createMessage(chatId, _id, messageText);
+  async function onPressHandler() {
+    const messageCreate: IMessageCreate = {
+      chatId,
+      senderId: _id,
+      text: messageText,
+    };
+    await dispatch(createMessage(messageCreate));
     setMessageText('');
   }
 
@@ -25,7 +32,7 @@ function MessageSender({chatId, messageText, setMessageText}: Props) {
         onChangeText={setMessageText}
         style={styles.textInput}
       />
-      <SendButton handler={handler} />
+      <SendButton handler={onPressHandler} />
     </View>
   );
 }

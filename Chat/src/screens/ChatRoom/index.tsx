@@ -1,24 +1,33 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {userBreakpoints} from '../../@constants/apiBreackpoint';
+import {userEndpoints} from '../../@constants/apiEndpoint';
 import {ChatRoomProps, IChat, IUser} from '../../@types/common';
 import {findChat} from '../../API/chatAPI';
 import ChatRoomHeader from '../../components/ChatRoomHeader';
+import DeleteButton from '../../components/common/DeleteButton';
 import MessagesList from '../../components/MesagesList';
 import MessageSender from '../../components/MessageSender/indes';
 import {useAppSelector} from '../../hooks/storeHooks';
 
-function ChatRoom({route}: ChatRoomProps) {
+function ChatRoom({route, navigation}: ChatRoomProps) {
   const user = useAppSelector(state => state.user);
   const [secondUser, setSecondUser] = useState<IUser>();
   const [_, setChat] = useState<IChat>();
   const [message, setMessage] = useState<string>('');
 
-  const {secondUserId, chatId} = route.params;
+  const {secondUserId} = route.params;
+
+  const chatId = useAppSelector(state => {
+    return state.chat.chats.find(chat => {
+      return (
+        chat.members.includes(user._id) && chat.members.includes(secondUserId)
+      );
+    });
+  });
 
   useEffect(() => {
     async function fetchUser() {
-      const response = await fetch(userBreakpoints.findUser + secondUserId);
+      const response = await fetch(userEndpoints.findUser + secondUserId);
       const data: IUser = await response.json();
       setSecondUser(data);
     }
@@ -36,12 +45,31 @@ function ChatRoom({route}: ChatRoomProps) {
     fetchChat();
   }, [user, secondUserId]);
 
-  return secondUser ? (
+  function backButtonHandler() {
+    navigation.navigate('Main');
+  }
+
+  function userListItemHandler() {
+    navigation.navigate('Profile', {
+      userId: secondUserId,
+    });
+  }
+
+  return secondUser && chatId ? (
     <View style={styles.container}>
-      <ChatRoomHeader user={secondUser} />
-      <MessagesList firstUser={user} secondUser={secondUser} chatId={chatId} />
+      <ChatRoomHeader
+        user={secondUser}
+        backButtonHandler={backButtonHandler}
+        userListItemHandler={userListItemHandler}
+        additionalButton={<DeleteButton />}
+      />
+      <MessagesList
+        firstUser={user}
+        secondUser={secondUser}
+        chatId={chatId._id}
+      />
       <MessageSender
-        chatId={chatId}
+        chatId={chatId._id}
         messageText={message}
         setMessageText={setMessage}
       />

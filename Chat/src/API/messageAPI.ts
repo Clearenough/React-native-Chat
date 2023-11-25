@@ -1,4 +1,4 @@
-import {messageBreakpoints} from '../@constants/apiBreackpoint';
+import {messageEndpoints} from '../@constants/apiEndpoint';
 import {IMessage, IMessageCreate} from '../@types/common';
 
 export async function createMessage(
@@ -11,7 +11,7 @@ export async function createMessage(
     senderId,
     text,
   };
-  const response = await fetch(messageBreakpoints.message, {
+  const response = await fetch(messageEndpoints.message, {
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify(body),
     method: 'POST',
@@ -21,7 +21,7 @@ export async function createMessage(
 }
 
 export async function getMessages(chatId: string): Promise<IMessage[]> {
-  const response = await fetch(messageBreakpoints.message + chatId);
+  const response = await fetch(messageEndpoints.message + chatId);
   const messages: IMessage[] = await response.json();
   return messages;
 }

@@ -1,8 +1,9 @@
 import React from 'react';
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect} from 'react';
 import {FlatList, ListRenderItemInfo, StyleSheet, View} from 'react-native';
 import {IMessage, IUser} from '../../@types/common';
-import {getMessages} from '../../API/messageAPI';
+import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
+import {getMessages} from '../../store/slices/messageSlice';
 import Message from '../Message';
 
 interface Props {
@@ -12,15 +13,15 @@ interface Props {
 }
 
 function MessagesList({firstUser, secondUser, chatId}: Props) {
-  const [messages, setMessages] = useState<IMessage[]>([]);
+  const dispatch = useAppDispatch();
+  const messages = useAppSelector(state => state.message.messages);
 
   useEffect(() => {
     async function fetchMessages() {
-      const chatMessages = await getMessages(chatId);
-      setMessages(chatMessages);
+      dispatch(getMessages(chatId));
     }
     fetchMessages();
-  }, [chatId]);
+  }, [chatId, dispatch]);
 
   const renderItem = useCallback(
     ({item}: ListRenderItemInfo<IMessage>) => {
