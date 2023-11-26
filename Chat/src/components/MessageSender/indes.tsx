@@ -1,6 +1,7 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {StyleSheet, TextInput, View} from 'react-native';
 import {IMessageCreate} from '../../@types/common';
+import {SocketContext} from '../../contexts/SocketContext';
 import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
 import {createMessage} from '../../store/slices/messageSlice';
 import SendButton from '../common/SendButton';
@@ -8,10 +9,17 @@ import SendButton from '../common/SendButton';
 interface Props {
   chatId: string;
   messageText: string;
+  recipientId: string;
   setMessageText(message: string): void;
 }
 
-function MessageSender({chatId, messageText, setMessageText}: Props) {
+function MessageSender({
+  chatId,
+  messageText,
+  recipientId,
+  setMessageText,
+}: Props) {
+  const {socketState} = useContext(SocketContext);
   const {_id} = useAppSelector(state => state.user);
   const dispatch = useAppDispatch();
 
@@ -22,6 +30,9 @@ function MessageSender({chatId, messageText, setMessageText}: Props) {
       text: messageText,
     };
     await dispatch(createMessage(messageCreate));
+    if (socketState.socket) {
+      socketState.socket.emit('sendMessage', {...messageCreate, recipientId});
+    }
     setMessageText('');
   }
 
