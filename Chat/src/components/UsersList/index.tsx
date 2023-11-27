@@ -25,7 +25,7 @@ function UsersList() {
       setUsers(data.filter(item => item._id !== user._id));
     };
     fetchUsers();
-  }, [user]);
+  }, [user, socketState]);
 
   const onPress = useCallback(
     async (_id: string) => {
