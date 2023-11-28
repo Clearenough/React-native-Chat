@@ -17,10 +17,7 @@ function MessagesList({firstUser, secondUser, chatId}: Props) {
   const messages = useAppSelector(state => state.message.messages);
 
   useEffect(() => {
-    async function fetchMessages() {
-      dispatch(getMessages(chatId));
-    }
-    fetchMessages();
+    dispatch(getMessages(chatId));
   }, [chatId, dispatch]);
 
   const renderItem = useCallback(
@@ -40,8 +37,9 @@ function MessagesList({firstUser, secondUser, chatId}: Props) {
     <View style={styles.container}>
       <FlatList
         renderItem={renderItem}
-        data={messages}
+        data={[...messages].reverse()}
         keyExtractor={item => item._id}
+        inverted={true}
       />
     </View>
   );

@@ -17,7 +17,6 @@ export const createMessage = createAsyncThunk(
       method: 'POST',
     });
     const data: IMessage | IServerError | string = await response.json();
-
     let message = '';
     if (!response.ok) {
       if (typeof data === 'string' || 'message' in data) {

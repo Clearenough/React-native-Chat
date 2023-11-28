@@ -153,7 +153,7 @@ export interface IMessageCreate {
   text: string;
 }
 
-export interface ISocketMessage extends IMessageCreate {
+export interface ISocketMessage extends IMessage {
   recipientId: string;
 }
 

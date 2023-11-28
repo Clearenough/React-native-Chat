@@ -29,7 +29,8 @@ function MessageSender({
       senderId: _id,
       text: messageText,
     };
-    await dispatch(createMessage(messageCreate));
+    dispatch(createMessage(messageCreate));
+    console.log(messageCreate);
     if (socketState.socket) {
       socketState.socket.emit('sendMessage', {...messageCreate, recipientId});
     }

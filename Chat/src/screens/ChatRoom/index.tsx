@@ -57,10 +57,16 @@ function ChatRoom({route, navigation}: ChatRoomProps) {
       if (!currentChat || currentChat._id !== res.chatId) {
         return;
       }
+      console.log('socket message');
       if (res.senderId !== user._id) {
         dispatch(createMessage(res));
       }
     });
+    return () => {
+      if (socketState.socket !== null) {
+        socketState.socket.off('getMessage');
+      }
+    };
   }, [currentChat, dispatch, socketState.socket, user._id]);
 
   function backButtonHandler() {
