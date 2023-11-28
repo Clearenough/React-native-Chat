@@ -9,9 +9,7 @@ export default function socketReducer(
   action: ISocketAction,
 ) {
   const {socket, onlineUsers} = action.payload;
-  console.log(action.type, action.payload);
   if (action.type === SocketActionType.socket) {
-    console.log('SOCKET');
     if (socket) {
       return {
         ...state,
@@ -21,7 +19,6 @@ export default function socketReducer(
     return state;
   }
   if (action.type === SocketActionType.users) {
-    console.log('USERS');
     if (onlineUsers) {
       return {
         ...state,

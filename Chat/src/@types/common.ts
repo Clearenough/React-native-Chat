@@ -153,6 +153,10 @@ export interface IMessageCreate {
   text: string;
 }
 
+export interface ISocketMessage extends IMessage {
+  recipientId: string;
+}
+
 export interface ServerToClientEvents {
   noArg: () => void;
   basicEmit: (a: number, b: string, c: Buffer) => void;

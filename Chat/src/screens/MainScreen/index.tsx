@@ -1,13 +1,17 @@
 import React, {useContext, useEffect} from 'react';
+import {
+  IOnlineUser,
+  ISocketPayload,
+  SocketActionType,
+} from '../../@types/common';
 import UsersList from '../../components/UsersList';
+import {SocketContext} from '../../contexts/SocketContext';
 import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
 import {getUsersChats} from '../../store/slices/chatSlice';
-import {SocketContext} from '../../contexts/SocketContext';
-import {ISocketPayload, SocketActionType} from '../../@types/common';
 
 function MainScreen() {
   const dispatch = useAppDispatch();
-  const {socketState} = useContext(SocketContext);
+  const {socketState, dispatch: contextDispatch} = useContext(SocketContext);
   const id = useAppSelector(state => state.user._id);
 
   useEffect(() => {
@@ -17,14 +21,26 @@ function MainScreen() {
   useEffect(() => {
     if (socketState.socket) {
       socketState.socket.emit('addNewUser', id);
-      socketState.socket.on('getOnlineUsers', (res: ISocketPayload) => {
-        dispatch({
+    }
+  }, [dispatch, id, socketState.socket]);
+
+  useEffect(() => {
+    socketState.socket &&
+      socketState.socket.on('getOnlineUsers', (res: IOnlineUser[]) => {
+        const payload: ISocketPayload = {
+          onlineUsers: res,
+        };
+        contextDispatch({
           type: SocketActionType.users,
-          payload: res,
+          payload,
         });
       });
-    }
-  }, [id, socketState.socket]);
+    return () => {
+      if (socketState.socket) {
+        socketState.socket.off('getOnlineUsers');
+      }
+    };
+  }, [contextDispatch, socketState.socket]);
 
   return <UsersList />;
 }
