@@ -12,6 +12,7 @@ export const userEndpoints = {
 export const chatEndpoints = {
   createChat: baseChatUrl + '/',
   getUserChats: baseChatUrl + '/',
+  deleteChat: baseChatUrl + '/',
   getChat: baseChatUrl + '/find/',
 };
 

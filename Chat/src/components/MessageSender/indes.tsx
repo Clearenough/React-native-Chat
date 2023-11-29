@@ -30,7 +30,6 @@ function MessageSender({
       text: messageText,
     };
     dispatch(createMessage(messageCreate));
-    console.log(messageCreate);
     if (socketState.socket) {
       socketState.socket.emit('sendMessage', {...messageCreate, recipientId});
     }

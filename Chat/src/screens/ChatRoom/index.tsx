@@ -1,14 +1,14 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {userEndpoints} from '../../@constants/apiEndpoint';
-import {ChatRoomProps, IChat, ISocketMessage, IUser} from '../../@types/common';
-import {findChat} from '../../API/chatAPI';
+import {ChatRoomProps, ISocketMessage, IUser} from '../../@types/common';
 import ChatRoomHeader from '../../components/ChatRoomHeader';
 import DeleteButton from '../../components/common/DeleteButton';
 import MessagesList from '../../components/MesagesList';
 import MessageSender from '../../components/MessageSender/indes';
 import {SocketContext} from '../../contexts/SocketContext';
 import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
+import {deleteChat, findChat} from '../../store/slices/chatSlice';
 import {createMessage} from '../../store/slices/messageSlice';
 
 function ChatRoom({route, navigation}: ChatRoomProps) {
@@ -16,7 +16,6 @@ function ChatRoom({route, navigation}: ChatRoomProps) {
   const user = useAppSelector(state => state.user);
   const dispatch = useAppDispatch();
   const [secondUser, setSecondUser] = useState<IUser>();
-  const [_, setChat] = useState<IChat>();
   const [message, setMessage] = useState<string>('');
 
   const {secondUserId} = route.params;
@@ -39,15 +38,13 @@ function ChatRoom({route, navigation}: ChatRoomProps) {
   }, [secondUserId]);
 
   useEffect(() => {
-    async function fetchChat() {
-      const chatInfo = await findChat({
+    dispatch(
+      findChat({
         firstId: user._id,
         secondId: secondUserId,
-      });
-      setChat(chatInfo);
-    }
-    fetchChat();
-  }, [user, secondUserId]);
+      }),
+    );
+  }, [user, secondUserId, dispatch]);
 
   useEffect(() => {
     if (socketState.socket === null) {
@@ -85,7 +82,14 @@ function ChatRoom({route, navigation}: ChatRoomProps) {
         user={secondUser}
         backButtonHandler={backButtonHandler}
         userListItemHandler={userListItemHandler}
-        additionalButton={<DeleteButton />}
+        additionalButton={
+          <DeleteButton
+            onPressHandler={() => {
+              dispatch(deleteChat(currentChat._id));
+              navigation.goBack();
+            }}
+          />
+        }
       />
       <MessagesList
         firstUser={user}
