@@ -1,19 +1,28 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {Pressable, StyleSheet, Text} from 'react-native';
 import {IMessage, IUser} from '../../@types/common';
 import UserListItem from '../UserListItem';
 
 interface Props {
   user: IUser;
   message: IMessage;
+  longPressHandler: () => void;
 }
 
-function Message({user, message}: Props) {
+function Message({user, message, longPressHandler}: Props) {
   return (
-    <View style={styles.container}>
-      <UserListItem username={user.username} />
+    <Pressable
+      style={styles.container}
+      onLongPress={() => {
+        longPressHandler();
+      }}>
+      <UserListItem
+        username={user.username}
+        isUserOnline={false}
+        displayOnlineStatus={false}
+      />
       <Text>{message.text}</Text>
-    </View>
+    </Pressable>
   );
 }
 

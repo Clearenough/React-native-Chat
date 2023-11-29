@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {StyleSheet, TextInput, View} from 'react-native';
 import {IMessageCreate} from '../../@types/common';
 import {SocketContext} from '../../contexts/SocketContext';
@@ -21,18 +21,26 @@ function MessageSender({
 }: Props) {
   const {socketState} = useContext(SocketContext);
   const {_id} = useAppSelector(state => state.user);
+  const lastMessage = useAppSelector(
+    state => state.message.messages[state.message.messages.length - 1],
+  );
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (socketState.socket) {
+      socketState.socket.emit('sendMessage', lastMessage);
+      console.log(lastMessage);
+    }
+  }, [lastMessage, socketState.socket]);
 
   async function onPressHandler() {
     const messageCreate: IMessageCreate = {
       chatId,
       senderId: _id,
+      recipientId,
       text: messageText,
     };
     dispatch(createMessage(messageCreate));
-    if (socketState.socket) {
-      socketState.socket.emit('sendMessage', {...messageCreate, recipientId});
-    }
     setMessageText('');
   }
 

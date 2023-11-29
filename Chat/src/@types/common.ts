@@ -144,17 +144,15 @@ export interface IMessage {
   _id: string;
   chatId: string;
   senderId: string;
+  recipientId: string;
   text: string;
 }
 
 export interface IMessageCreate {
   chatId: string;
   senderId: string;
-  text: string;
-}
-
-export interface ISocketMessage extends IMessage {
   recipientId: string;
+  text: string;
 }
 
 export interface ServerToClientEvents {

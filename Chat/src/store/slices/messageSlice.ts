@@ -29,6 +29,26 @@ export const createMessage = createAsyncThunk(
   },
 );
 
+export const deleteMessage = createAsyncThunk(
+  'messages/deleteMessage',
+  async function (messageId: string, {rejectWithValue}) {
+    const response = await fetch(messageEndpoints.message + messageId, {
+      headers: {'Content-Type': 'application/json'},
+      method: 'DELETE',
+    });
+    const data: IServerError | string = await response.json();
+    let message = '';
+    if (!response.ok) {
+      if (typeof data !== 'string') {
+        message = errorExtractor(data);
+        return rejectWithValue(message);
+      }
+    }
+
+    return messageId;
+  },
+);
+
 export const getMessages = createAsyncThunk(
   'messages/getMessages',
   async function (chatId: string, {rejectWithValue}) {
@@ -61,7 +81,13 @@ export const initialState: MessageState = {
 export const messageSlice = createSlice({
   name: 'messages',
   initialState,
-  reducers: {},
+  reducers: {
+    addMessage: (state, action: PayloadAction<IMessage>) => {
+      if (!state.messages.find(message => message._id === action.payload._id)) {
+        state.messages.push(action.payload);
+      }
+    },
+  },
   extraReducers(builder) {
     builder.addCase(
       createMessage.fulfilled,
@@ -85,12 +111,27 @@ export const messageSlice = createSlice({
       state.status = 'pending';
       state.error = '';
     });
+    builder.addCase(
+      deleteMessage.fulfilled,
+      (state, action: PayloadAction<string>) => {
+        state.messages = state.messages.filter(
+          message => message._id !== action.payload,
+        );
+        state.status = 'resolved';
+      },
+    );
+    builder.addCase(deleteMessage.pending, state => {
+      state.status = 'pending';
+      state.error = '';
+    });
     builder.addMatcher(isError, (state, action: PayloadAction<string>) => {
       state.status = 'error';
       state.error = action.payload;
     });
   },
 });
+
+export const {addMessage} = messageSlice.actions;
 
 export default messageSlice.reducer;
 

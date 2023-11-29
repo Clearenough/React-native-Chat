@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {userEndpoints} from '../../@constants/apiEndpoint';
-import {ChatRoomProps, ISocketMessage, IUser} from '../../@types/common';
+import {ChatRoomProps, IMessage, IUser} from '../../@types/common';
 import ChatRoomHeader from '../../components/ChatRoomHeader';
 import DeleteButton from '../../components/common/DeleteButton';
 import MessagesList from '../../components/MesagesList';
@@ -9,7 +9,7 @@ import MessageSender from '../../components/MessageSender/indes';
 import {SocketContext} from '../../contexts/SocketContext';
 import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
 import {deleteChat, findChat} from '../../store/slices/chatSlice';
-import {createMessage} from '../../store/slices/messageSlice';
+import {addMessage} from '../../store/slices/messageSlice';
 
 function ChatRoom({route, navigation}: ChatRoomProps) {
   const {socketState} = useContext(SocketContext);
@@ -50,13 +50,12 @@ function ChatRoom({route, navigation}: ChatRoomProps) {
     if (socketState.socket === null) {
       return;
     }
-    socketState.socket.on('getMessage', (res: ISocketMessage) => {
+    socketState.socket.on('getMessage', (res: IMessage) => {
       if (!currentChat || currentChat._id !== res.chatId) {
         return;
       }
-      console.log('socket message');
       if (res.senderId !== user._id) {
-        dispatch(createMessage(res));
+        dispatch(addMessage(res));
       }
     });
     return () => {

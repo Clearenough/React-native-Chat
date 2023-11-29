@@ -34,7 +34,6 @@ export const deleteChat = createAsyncThunk(
     const response = await fetch(chatEndpoints.deleteChat + chatId, {
       method: 'DELETE',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({chatId}),
     });
     const data: IServerError | string = await response.json();
     let message = '';
