@@ -73,6 +73,9 @@ export const userSlice = createSlice({
     setUserId: (state, action: PayloadAction<string>) => {
       state._id = action.payload;
     },
+    logout: state => {
+      state._id = '';
+    },
   },
   extraReducers(builder) {
     builder
@@ -95,5 +98,7 @@ export const userSlice = createSlice({
       });
   },
 });
+
+export const {logout} = userSlice.actions;
 
 export default userSlice.reducer;
