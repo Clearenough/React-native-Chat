@@ -1,8 +1,8 @@
 // import {createSelector} from '@reduxjs/toolkit';
-// import {RootState} from '../../store';
+import {RootState} from '../../store';
 // import {selectUser} from '../user/selectors';
 
-// const selectChats = (state: RootState) => state.chat.chats;
+export const selectChats = (state: RootState) => state.chat.chats;
 
 // export const selectCurrentChat = createSelector(
 //   [selectChats, selectUser],
