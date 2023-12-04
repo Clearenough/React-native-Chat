@@ -52,26 +52,27 @@ function Form({
 const styles = StyleSheet.create({
   formContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 30,
+    marginTop: 84,
+    maxWidth: 343,
   },
   text: {
     fontSize: 40,
   },
   textStyle: {
-    fontSize: 20,
-    padding: 10,
-    color: '#FFDDE2',
+    fontFamily: 'Inter',
+    fontSize: 16,
+    fontWeight: '600',
+    lineHeight: 24,
+    letterSpacing: 0.032,
+    color: '#000',
+    paddingVertical: 12,
   },
   viewStyle: {
-    width: '80%',
+    width: 343,
+    marginTop: 40,
     alignItems: 'center',
-    borderRadius: 10,
-    borderColor: 'black',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    backgroundColor: '#DE369D',
+    borderRadius: 4,
+    backgroundColor: '#29CCBB',
   },
 });
 

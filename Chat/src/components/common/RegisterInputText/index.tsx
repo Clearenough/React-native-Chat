@@ -1,5 +1,13 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {StyleSheet, Text, TextInput, View} from 'react-native';
+import {
+  StyleProp,
+  StyleSheet,
+  Text,
+  TextInput,
+  TextStyle,
+  View,
+  ViewStyle,
+} from 'react-native';
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -15,13 +23,25 @@ interface Props {
   placeholder: string;
   inputValidationType: 'name' | 'username' | 'password';
   inputKey: string;
-  secure?: boolean;
+  containerStyles: StyleProp<ViewStyle>;
+  labelContainerStyles: StyleProp<ViewStyle>;
+  labelTextStyles: StyleProp<TextStyle>;
+  inputStyles: StyleProp<TextStyle>;
+  inputContainerStyles: StyleProp<ViewStyle>;
+  errorTextStyles: StyleProp<TextStyle>;
+  secure: boolean;
 }
 
 function RegisterInputText({
   placeholder,
   inputValidationType,
   inputKey,
+  containerStyles,
+  labelContainerStyles,
+  labelTextStyles,
+  inputStyles,
+  inputContainerStyles,
+  errorTextStyles,
   secure,
 }: Props) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -82,29 +102,31 @@ function RegisterInputText({
   }
 
   return (
-    <View style={styles.container}>
-      <Animated.View style={[styles.labelContainer, transform]}>
-        <Text>{placeholder}</Text>
-      </Animated.View>
-      <View>
-        <TextInput
-          style={styles.input}
-          onChangeText={onChangeText}
-          onFocus={onFocus}
-          onBlur={onBlur}
-          secureTextEntry={!isPasswordVisible}
-        />
-        {inputValidationType === 'password' && secure && (
-          <ShowPasswordButton
-            isPasswordVisible={isPasswordVisible}
-            handler={() => setIsPasswordVisible(!isPasswordVisible)}
-            containerStyle={styles.buttonContainer}
+    <View>
+      <View style={containerStyles}>
+        <Animated.View style={[labelContainerStyles, transform]}>
+          <Text style={labelTextStyles}>{placeholder}</Text>
+        </Animated.View>
+        <View style={inputContainerStyles}>
+          <TextInput
+            style={inputStyles}
+            onChangeText={onChangeText}
+            onFocus={onFocus}
+            onBlur={onBlur}
+            secureTextEntry={secure && !isPasswordVisible}
           />
-        )}
-        {formState[inputKey]?.value && formState[inputKey]?.error && (
-          <Text>{formState[inputKey].error}</Text>
-        )}
+          {inputValidationType === 'password' && secure && (
+            <ShowPasswordButton
+              isPasswordVisible={isPasswordVisible}
+              handler={() => setIsPasswordVisible(!isPasswordVisible)}
+              containerStyle={styles.buttonContainer}
+            />
+          )}
+        </View>
       </View>
+      {formState[inputKey]?.value && formState[inputKey]?.error && (
+        <Text style={errorTextStyles}>{formState[inputKey].error}</Text>
+      )}
     </View>
   );
 }
