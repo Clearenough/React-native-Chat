@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, Text, TextInput, View} from 'react-native';
 import Animated, {
   interpolate,
@@ -9,6 +9,7 @@ import Animated, {
 import {FormActionType, IFormPayload} from '../../../@types/common';
 import {FormContext} from '../../../contexts/FormContext';
 import {validation} from '../../../helpers/formValidation';
+import ShowPasswordButton from '../ShowPasswordButton';
 
 interface Props {
   placeholder: string;
@@ -23,6 +24,7 @@ function RegisterInputText({
   inputKey,
   secure,
 }: Props) {
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const {formState, formDispatch} = useContext(FormContext);
   const animation = useSharedValue(0);
   const transform = useAnimatedStyle(() => {
@@ -90,9 +92,18 @@ function RegisterInputText({
           onChangeText={onChangeText}
           onFocus={onFocus}
           onBlur={onBlur}
-          secureTextEntry={secure}
+          secureTextEntry={!isPasswordVisible}
         />
-        {formState[inputKey]?.error && <Text>{formState[inputKey].error}</Text>}
+        {inputValidationType === 'password' && secure && (
+          <ShowPasswordButton
+            isPasswordVisible={isPasswordVisible}
+            handler={() => setIsPasswordVisible(!isPasswordVisible)}
+            containerStyle={styles.buttonContainer}
+          />
+        )}
+        {formState[inputKey]?.value && formState[inputKey]?.error && (
+          <Text>{formState[inputKey].error}</Text>
+        )}
       </View>
     </View>
   );
@@ -115,6 +126,11 @@ const styles = StyleSheet.create({
   },
   input: {
     padding: 20,
+  },
+  buttonContainer: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
   },
 });
 
