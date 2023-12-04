@@ -4,9 +4,9 @@ import {
   createSlice,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import {messageEndpoints} from '../../@constants/apiEndpoint';
-import {IMessage, IMessageCreate, IServerError} from '../../@types/common';
-import {errorExtractor} from '../../helpers/errorExtractor';
+import {messageEndpoints} from '../../../@constants/apiEndpoint';
+import {IMessage, IMessageCreate, IServerError} from '../../../@types/common';
+import {errorExtractor} from '../../../helpers/errorExtractor';
 
 export const createMessage = createAsyncThunk(
   'messages/createMessage',

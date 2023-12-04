@@ -1,11 +1,11 @@
 import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
-import {userEndpoints} from '../../@constants/apiEndpoint';
+import {userEndpoints} from '../../../@constants/apiEndpoint';
 import {
   IServerError,
   IUser,
   IUserSignIn,
   IUserSignUp,
-} from '../../@types/common';
+} from '../../../@types/common';
 
 export const userAuthentication = createAsyncThunk<
   IUser,

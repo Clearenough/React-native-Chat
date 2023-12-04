@@ -8,12 +8,13 @@ import MessagesList from '../../components/MesagesList';
 import MessageSender from '../../components/MessageSender/indes';
 import {SocketContext} from '../../contexts/SocketContext';
 import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
-import {deleteChat, findChat} from '../../store/slices/chatSlice';
-import {addMessage} from '../../store/slices/messageSlice';
+import {deleteChat, findChat} from '../../store/slices/chat/chatSlice';
+import {addMessage} from '../../store/slices/message/messageSlice';
+import {selectUser} from '../../store/slices/user/selectors';
 
 function ChatRoom({route, navigation}: ChatRoomProps) {
   const {socketState} = useContext(SocketContext);
-  const user = useAppSelector(state => state.user);
+  const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
   const [secondUser, setSecondUser] = useState<IUser>();
   const [message, setMessage] = useState<string>('');

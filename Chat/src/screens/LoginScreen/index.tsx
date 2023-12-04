@@ -12,7 +12,7 @@ import RegisterButton from '../../components/common/RegisterButton';
 import RegisterInputText from '../../components/common/RegisterInputText';
 import FormContainer from '../../components/Form/FormContainer';
 import {IUserSignIn, RootStackParamList} from '../../@types/common';
-import {userAuthentication} from '../../store/slices/userSlice';
+import {userAuthentication} from '../../store/slices/user/userSlice';
 import {useAppDispatch} from '../../hooks/storeHooks';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;

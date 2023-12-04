@@ -7,12 +7,13 @@ import {
 import UsersList from '../../components/UsersList';
 import {SocketContext} from '../../contexts/SocketContext';
 import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
-import {getUsersChats} from '../../store/slices/chatSlice';
+import {getUsersChats} from '../../store/slices/chat/chatSlice';
+import {selectUser} from '../../store/slices/user/selectors';
 
 function MainScreen() {
   const dispatch = useAppDispatch();
   const {socketState, dispatch: contextDispatch} = useContext(SocketContext);
-  const id = useAppSelector(state => state.user._id);
+  const {_id: id} = useAppSelector(selectUser);
 
   useEffect(() => {
     dispatch(getUsersChats(id));

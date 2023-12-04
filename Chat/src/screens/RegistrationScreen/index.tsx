@@ -13,7 +13,7 @@ import RegisterButton from '../../components/common/RegisterButton';
 import RegisterInputText from '../../components/common/RegisterInputText';
 import FormContainer from '../../components/Form/FormContainer';
 import {useAppDispatch} from '../../hooks/storeHooks';
-import {userAuthentication} from '../../store/slices/userSlice';
+import {userAuthentication} from '../../store/slices/user/userSlice';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Register'>;
 

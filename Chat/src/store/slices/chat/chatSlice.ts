@@ -4,9 +4,9 @@ import {
   createSlice,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import {chatEndpoints} from '../../@constants/apiEndpoint';
-import {IChat, IChatCreate, IServerError} from '../../@types/common';
-import {errorExtractor} from '../../helpers/errorExtractor';
+import {chatEndpoints} from '../../../@constants/apiEndpoint';
+import {IChat, IChatCreate, IServerError} from '../../../@types/common';
+import {errorExtractor} from '../../../helpers/errorExtractor';
 
 export const createChat = createAsyncThunk(
   'chats/createChat',

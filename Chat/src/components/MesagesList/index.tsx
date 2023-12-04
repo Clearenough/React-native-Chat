@@ -4,7 +4,11 @@ import {FlatList, ListRenderItemInfo, StyleSheet, View} from 'react-native';
 import {IMessage, IUser} from '../../@types/common';
 import {SocketContext} from '../../contexts/SocketContext';
 import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
-import {deleteMessage, getMessages} from '../../store/slices/messageSlice';
+import {
+  deleteMessage,
+  getMessages,
+} from '../../store/slices/message/messageSlice';
+import {selectMessages} from '../../store/slices/message/selectors';
 import Message from '../Message';
 
 interface Props {
@@ -15,7 +19,7 @@ interface Props {
 
 function MessagesList({firstUser, secondUser, chatId}: Props) {
   const dispatch = useAppDispatch();
-  const messages = useAppSelector(state => state.message.messages);
+  const messages = useAppSelector(selectMessages);
   const {socketState} = useContext(SocketContext);
 
   useEffect(() => {

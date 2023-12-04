@@ -3,7 +3,9 @@ import {StyleSheet, TextInput, View} from 'react-native';
 import {IMessageCreate} from '../../@types/common';
 import {SocketContext} from '../../contexts/SocketContext';
 import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
-import {createMessage} from '../../store/slices/messageSlice';
+import {createMessage} from '../../store/slices/message/messageSlice';
+import {selectLastMessage} from '../../store/slices/message/selectors';
+import {selectUser} from '../../store/slices/user/selectors';
 import SendButton from '../common/SendButton';
 
 interface Props {
@@ -20,10 +22,8 @@ function MessageSender({
   setMessageText,
 }: Props) {
   const {socketState} = useContext(SocketContext);
-  const {_id} = useAppSelector(state => state.user);
-  const lastMessage = useAppSelector(
-    state => state.message.messages[state.message.messages.length - 1],
-  );
+  const {_id} = useAppSelector(selectUser);
+  const lastMessage = useAppSelector(selectLastMessage);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
