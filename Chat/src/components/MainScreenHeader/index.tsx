@@ -26,6 +26,7 @@ function MainScreenHeader() {
 
 const styles = StyleSheet.create({
   container: {
+    width: 343,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },

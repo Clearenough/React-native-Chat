@@ -47,7 +47,9 @@ function MainScreen() {
 
   return (
     <View style={styles.container}>
-      <MainScreenHeader />
+      <View style={styles.headerContainer}>
+        <MainScreenHeader />
+      </View>
       <UsersList />
     </View>
   );
@@ -55,6 +57,9 @@ function MainScreen() {
 
 const styles = StyleSheet.create({
   container: {
+    justifyContent: 'center',
+  },
+  headerContainer: {
     maxWidth: 343,
     alignSelf: 'center',
     paddingTop: 64,

@@ -41,6 +41,9 @@ function UserListItem({
       <View style={styles.user}>
         <Text style={styles.text}>{username.slice(0, 2)}</Text>
       </View>
+      <Text style={styles.usernameText} numberOfLines={1} ellipsizeMode="tail">
+        {username}
+      </Text>
       {displayOnlineStatus && onlineStatusDisplay()}
     </Pressable>
   );
@@ -48,19 +51,31 @@ function UserListItem({
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 4,
   },
   user: {
     backgroundColor: 'purple',
     borderRadius: 100,
-    height: 40,
-    width: 40,
-    marginHorizontal: 5,
+    height: 44,
+    width: 44,
     justifyContent: 'center',
     alignItems: 'center',
   },
   text: {
     color: 'white',
+  },
+  usernameText: {
+    maxWidth: 44,
+    overflow: 'hidden',
+    color: '#C6C7CD',
+    textAlign: 'center',
+    fontFamily: 'Inter',
+    fontSize: 10,
+    fontStyle: 'normal',
+    fontWeight: '600',
+    lineHeight: 14,
   },
   online: {
     position: 'absolute',

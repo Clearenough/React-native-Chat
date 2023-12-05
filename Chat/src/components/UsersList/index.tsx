@@ -61,13 +61,19 @@ function UsersList() {
     [onPress, socketState],
   );
 
+  const renderSeparator = () => <View style={styles.separator} />;
+  const edgeSeparator = () => <View style={styles.edgeSeparator} />;
+
   return (
     <View style={styles.container}>
       <FlatList
         renderItem={renderItem}
         data={users}
         keyExtractor={item => item._id}
-        ListFooterComponentStyle={styles.container}
+        // ListFooterComponentStyle={styles.container}
+        ItemSeparatorComponent={renderSeparator}
+        ListHeaderComponent={edgeSeparator}
+        ListFooterComponent={edgeSeparator}
         horizontal
       />
     </View>
@@ -76,7 +82,13 @@ function UsersList() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
+    paddingTop: 24,
+  },
+  separator: {
+    width: 15.8,
+  },
+  edgeSeparator: {
+    width: 25,
   },
 });
 
