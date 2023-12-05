@@ -1,9 +1,11 @@
 import React, {useContext, useEffect} from 'react';
+import {StyleSheet, View} from 'react-native';
 import {
   IOnlineUser,
   ISocketPayload,
   SocketActionType,
 } from '../../@types/common';
+import MainScreenHeader from '../../components/MainScreenHeader';
 import UsersList from '../../components/UsersList';
 import {SocketContext} from '../../contexts/SocketContext';
 import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
@@ -43,7 +45,20 @@ function MainScreen() {
     };
   }, [contextDispatch, socketState.socket]);
 
-  return <UsersList />;
+  return (
+    <View style={styles.container}>
+      <MainScreenHeader />
+      <UsersList />
+    </View>
+  );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    maxWidth: 343,
+    alignSelf: 'center',
+    paddingTop: 64,
+  },
+});
 
 export default MainScreen;
