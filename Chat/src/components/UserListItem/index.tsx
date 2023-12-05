@@ -4,7 +4,7 @@ import {Pressable, StyleSheet, Text, View} from 'react-native';
 interface Props {
   username: string;
   isUserOnline: boolean;
-  displayOnlineStatus?: boolean;
+  displayOnlineStatus: boolean;
   onlineStatusDisplayType?: 'mark' | 'text';
   handler?: () => void;
 }

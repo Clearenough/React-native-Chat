@@ -4,9 +4,9 @@ import {
   createSlice,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import {chatEndpoints} from '../../@constants/apiEndpoint';
-import {IChat, IChatCreate, IServerError} from '../../@types/common';
-import {errorExtractor} from '../../helpers/errorExtractor';
+import {chatEndpoints} from '../../../@constants/apiEndpoint';
+import {IChat, IChatCreate, IServerError} from '../../../@types/common';
+import {errorExtractor} from '../../../helpers/errorExtractor';
 
 export const createChat = createAsyncThunk(
   'chats/createChat',
@@ -17,7 +17,6 @@ export const createChat = createAsyncThunk(
       body: JSON.stringify(chat),
     });
     const data: IChat | IServerError | string = await response.json();
-
     let message = '';
     if (!response.ok) {
       if (typeof data === 'string' || !('members' in data)) {
@@ -25,8 +24,26 @@ export const createChat = createAsyncThunk(
         return rejectWithValue(message);
       }
     }
-
     return data as IChat;
+  },
+);
+
+export const deleteChat = createAsyncThunk(
+  'chats/deleteChat',
+  async function (chatId: string, {rejectWithValue}) {
+    const response = await fetch(chatEndpoints.deleteChat + chatId, {
+      method: 'DELETE',
+      headers: {'Content-Type': 'application/json'},
+    });
+    const data: IServerError | string = await response.json();
+    let message = '';
+    if (!response.ok) {
+      if (typeof data !== 'string') {
+        message = errorExtractor(data);
+        return rejectWithValue(message);
+      }
+    }
+    return chatId;
   },
 );
 
@@ -60,7 +77,6 @@ export const findChat = createAsyncThunk(
         return rejectWithValue(message);
       }
     }
-
     return data as IChat;
   },
 );
@@ -104,6 +120,17 @@ export const chatSlice = createSlice({
       },
     );
     builder.addCase(getUsersChats.pending, state => {
+      state.status = 'pending';
+      state.error = '';
+    });
+    builder.addCase(
+      deleteChat.fulfilled,
+      (state, action: PayloadAction<string>) => {
+        state.chats = state.chats.filter(ch => ch._id !== action.payload);
+        state.status = 'resolved';
+      },
+    );
+    builder.addCase(deleteChat.pending, state => {
       state.status = 'pending';
       state.error = '';
     });

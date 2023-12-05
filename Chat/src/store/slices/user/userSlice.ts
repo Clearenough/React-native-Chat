@@ -1,11 +1,11 @@
 import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
-import {userEndpoints} from '../../@constants/apiEndpoint';
+import {userEndpoints} from '../../../@constants/apiEndpoint';
 import {
   IServerError,
   IUser,
   IUserSignIn,
   IUserSignUp,
-} from '../../@types/common';
+} from '../../../@types/common';
 
 export const userAuthentication = createAsyncThunk<
   IUser,
@@ -73,6 +73,9 @@ export const userSlice = createSlice({
     setUserId: (state, action: PayloadAction<string>) => {
       state._id = action.payload;
     },
+    logout: state => {
+      state._id = '';
+    },
   },
   extraReducers(builder) {
     builder
@@ -95,5 +98,7 @@ export const userSlice = createSlice({
       });
   },
 });
+
+export const {logout} = userSlice.actions;
 
 export default userSlice.reducer;

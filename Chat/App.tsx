@@ -6,24 +6,29 @@
  */
 
 import React from 'react';
-import {SafeAreaView, StyleSheet} from 'react-native';
+import {StatusBar, StyleSheet} from 'react-native';
 import {Provider} from 'react-redux';
-import {NavigationContainer} from '@react-navigation/native';
+import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import {store} from './src/store/store';
 import Navigation from './src/components/Navigation';
 import SocketContextProvider from './src/contexts/SocketContext';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+
+const navTheme = DefaultTheme;
+navTheme.colors.background = '#050833';
 
 function App() {
   return (
-    <NavigationContainer>
-      <SocketContextProvider>
-        <SafeAreaView style={styles.container}>
+    <SafeAreaProvider style={styles.container}>
+      <NavigationContainer theme={navTheme}>
+        <SocketContextProvider>
           <Provider store={store}>
+            <StatusBar barStyle="light-content" backgroundColor="#000000" />
             <Navigation />
           </Provider>
-        </SafeAreaView>
-      </SocketContextProvider>
-    </NavigationContainer>
+        </SocketContextProvider>
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }
 

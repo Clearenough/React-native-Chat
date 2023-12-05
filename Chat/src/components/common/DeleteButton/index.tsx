@@ -2,9 +2,13 @@ import React from 'react';
 import {Pressable} from 'react-native';
 import DeleteSVG from '../../../@svg/DeleteSVG';
 
-function DeleteButton() {
+interface Props {
+  onPressHandler: () => void;
+}
+
+function DeleteButton({onPressHandler}: Props) {
   return (
-    <Pressable>
+    <Pressable onPress={onPressHandler}>
       <DeleteSVG color="black" />
     </Pressable>
   );

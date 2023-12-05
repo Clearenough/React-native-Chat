@@ -7,13 +7,14 @@ import {ChatRoomNavigationProp, IChatCreate, IUser} from '../../@types/common';
 import {SocketContext} from '../../contexts/SocketContext';
 
 import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
-import {createChat} from '../../store/slices/chatSlice';
+import {createChat} from '../../store/slices/chat/chatSlice';
+import {selectUser} from '../../store/slices/user/selectors';
 import UserListItem from '../UserListItem';
 
 function UsersList() {
   const dispatch = useAppDispatch();
   const {socketState} = useContext(SocketContext);
-  const user = useAppSelector(state => state.user);
+  const user = useAppSelector(selectUser);
   const navigation = useNavigation<ChatRoomNavigationProp>();
 
   const [users, setUsers] = useState<IUser[]>([]);

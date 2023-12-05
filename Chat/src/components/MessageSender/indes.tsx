@@ -1,9 +1,11 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {StyleSheet, TextInput, View} from 'react-native';
 import {IMessageCreate} from '../../@types/common';
 import {SocketContext} from '../../contexts/SocketContext';
 import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
-import {createMessage} from '../../store/slices/messageSlice';
+import {createMessage} from '../../store/slices/message/messageSlice';
+import {selectLastMessage} from '../../store/slices/message/selectors';
+import {selectUser} from '../../store/slices/user/selectors';
 import SendButton from '../common/SendButton';
 
 interface Props {
@@ -20,20 +22,25 @@ function MessageSender({
   setMessageText,
 }: Props) {
   const {socketState} = useContext(SocketContext);
-  const {_id} = useAppSelector(state => state.user);
+  const {_id} = useAppSelector(selectUser);
+  const lastMessage = useAppSelector(selectLastMessage);
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (socketState.socket) {
+      socketState.socket.emit('sendMessage', lastMessage);
+      console.log(lastMessage);
+    }
+  }, [lastMessage, socketState.socket]);
 
   async function onPressHandler() {
     const messageCreate: IMessageCreate = {
       chatId,
       senderId: _id,
+      recipientId,
       text: messageText,
     };
     dispatch(createMessage(messageCreate));
-    console.log(messageCreate);
-    if (socketState.socket) {
-      socketState.socket.emit('sendMessage', {...messageCreate, recipientId});
-    }
     setMessageText('');
   }
 
