@@ -4,11 +4,8 @@ import {FlatList, ListRenderItemInfo, StyleSheet, View} from 'react-native';
 import {IMessage, IUser} from '../../@types/common';
 import {SocketContext} from '../../contexts/SocketContext';
 import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
-import {
-  deleteMessage,
-  getMessages,
-} from '../../store/slices/message/messageSlice';
-import {selectMessages} from '../../store/slices/message/selectors';
+import {deleteMessage} from '../../store/slices/message/messageSlice';
+import {selectCurrentChatMessages} from '../../store/slices/message/selectors';
 import Message from '../Message';
 
 interface Props {
@@ -17,21 +14,17 @@ interface Props {
   chatId: string;
 }
 
-function MessagesList({firstUser, secondUser, chatId}: Props) {
+function MessagesList({firstUser, secondUser}: Props) {
   const dispatch = useAppDispatch();
-  const messages = useAppSelector(selectMessages);
+  const messages = useAppSelector(selectCurrentChatMessages);
   const {socketState} = useContext(SocketContext);
-
-  useEffect(() => {
-    dispatch(getMessages(chatId));
-  }, [chatId, dispatch]);
 
   useEffect(() => {
     if (socketState.socket === null) {
       return;
     }
-    socketState.socket.on('getDeletedMessage', (messageId: string) => {
-      dispatch(deleteMessage(messageId));
+    socketState.socket.on('getDeletedMessage', (message: IMessage) => {
+      dispatch(deleteMessage(message));
     });
     return () => {
       if (socketState.socket === null) {
@@ -47,7 +40,7 @@ function MessagesList({firstUser, secondUser, chatId}: Props) {
         return;
       }
       socketState.socket.emit('deleteMessage', message);
-      dispatch(deleteMessage(message._id));
+      dispatch(deleteMessage(message));
     },
     [dispatch, socketState.socket],
   );

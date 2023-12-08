@@ -5,7 +5,12 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import {messageEndpoints} from '../../../@constants/apiEndpoint';
-import {IMessage, IMessageCreate, IServerError} from '../../../@types/common';
+import {
+  IChatMessages,
+  IMessage,
+  IMessageCreate,
+  IServerError,
+} from '../../../@types/common';
 import {errorExtractor} from '../../../helpers/errorExtractor';
 
 export const createMessage = createAsyncThunk(
@@ -31,21 +36,21 @@ export const createMessage = createAsyncThunk(
 
 export const deleteMessage = createAsyncThunk(
   'messages/deleteMessage',
-  async function (messageId: string, {rejectWithValue}) {
-    const response = await fetch(messageEndpoints.message + messageId, {
+  async function (message: IMessage, {rejectWithValue}) {
+    const response = await fetch(messageEndpoints.message + message._id, {
       headers: {'Content-Type': 'application/json'},
       method: 'DELETE',
     });
     const data: IServerError | string = await response.json();
-    let message = '';
+    let responseMessage = '';
     if (!response.ok) {
       if (typeof data !== 'string') {
-        message = errorExtractor(data);
-        return rejectWithValue(message);
+        responseMessage = errorExtractor(data);
+        return rejectWithValue(responseMessage);
       }
     }
 
-    return messageId;
+    return message;
   },
 );
 
@@ -61,19 +66,18 @@ export const getMessages = createAsyncThunk(
         return rejectWithValue(message);
       }
     }
-
     return data as IMessage[];
   },
 );
 
 export interface MessageState {
-  messages: IMessage[];
+  messages: IChatMessages;
   error: string;
   status: string;
 }
 
 export const initialState: MessageState = {
-  messages: [],
+  messages: {},
   error: '',
   status: '',
 };
@@ -83,8 +87,15 @@ export const messageSlice = createSlice({
   initialState,
   reducers: {
     addMessage: (state, action: PayloadAction<IMessage>) => {
-      if (!state.messages.find(message => message._id === action.payload._id)) {
-        state.messages.push(action.payload);
+      // if (!state.messages.find(message => message._id === action.payload._id)) {
+      //   state.messages.push(action.payload);
+      // }
+      if (
+        !state.messages[action.payload.chatId].find(
+          message => message._id === action.payload._id,
+        )
+      ) {
+        state.messages[action.payload.chatId].push(action.payload);
       }
     },
   },
@@ -92,7 +103,7 @@ export const messageSlice = createSlice({
     builder.addCase(
       createMessage.fulfilled,
       (state, action: PayloadAction<IMessage>) => {
-        state.messages.push(action.payload);
+        state.messages[action.payload.chatId].push(action.payload);
         state.status = 'resolved';
       },
     );
@@ -103,7 +114,10 @@ export const messageSlice = createSlice({
     builder.addCase(
       getMessages.fulfilled,
       (state, action: PayloadAction<IMessage[]>) => {
-        state.messages = action.payload;
+        // console.log(action.payload, 'PAYLOAD');
+        // state.messages = action.payload;
+        state.messages[action.payload[0].chatId] = action.payload;
+        //console.log(state.messages[action.payload[0].chatId], 'CHAT MESSAGES');
         state.status = 'resolved';
       },
     );
@@ -113,10 +127,10 @@ export const messageSlice = createSlice({
     });
     builder.addCase(
       deleteMessage.fulfilled,
-      (state, action: PayloadAction<string>) => {
-        state.messages = state.messages.filter(
-          message => message._id !== action.payload,
-        );
+      (state, action: PayloadAction<IMessage>) => {
+        state.messages[action.payload.chatId] = state.messages[
+          action.payload.chatId
+        ].filter(message => message._id !== action.payload._id);
         state.status = 'resolved';
       },
     );

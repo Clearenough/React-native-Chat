@@ -140,6 +140,10 @@ export interface IChatCreate {
   secondId: string;
 }
 
+export interface IChatMessages {
+  [key: string]: IMessage[];
+}
+
 export interface IMessage {
   _id: string;
   chatId: string;

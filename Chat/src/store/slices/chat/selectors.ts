@@ -3,7 +3,7 @@ import {RootState} from '../../store';
 // import {selectUser} from '../user/selectors';
 
 export const selectChats = (state: RootState) => state.chat.chats;
-
+export const selectCurrentChatId = (state: RootState) => state.chat.currentChat;
 // export const selectCurrentChat = createSelector(
 //   [selectChats, selectUser],
 //   (chats, user) => {

@@ -7,10 +7,11 @@ import {
 import {chatEndpoints} from '../../../@constants/apiEndpoint';
 import {IChat, IChatCreate, IServerError} from '../../../@types/common';
 import {errorExtractor} from '../../../helpers/errorExtractor';
+import {getMessages} from '../message/messageSlice';
 
 export const createChat = createAsyncThunk(
   'chats/createChat',
-  async function (chat: IChatCreate, {rejectWithValue}) {
+  async function (chat: IChatCreate, {rejectWithValue, dispatch}) {
     const response = await fetch(chatEndpoints.createChat, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
@@ -24,7 +25,10 @@ export const createChat = createAsyncThunk(
         return rejectWithValue(message);
       }
     }
-    return data as IChat;
+    const createdChat = data as IChat;
+    dispatch(setCurrentChat(createdChat._id));
+    dispatch(getMessages(createdChat._id));
+    return createdChat;
   },
 );
 
@@ -83,12 +87,14 @@ export const findChat = createAsyncThunk(
 
 export interface ChatState {
   chats: IChat[];
+  currentChat: string;
   status: string;
   error: string;
 }
 
 const initialState: ChatState = {
   chats: [],
+  currentChat: '',
   status: '',
   error: '',
 };
@@ -96,7 +102,14 @@ const initialState: ChatState = {
 export const chatSlice = createSlice({
   name: 'chats',
   initialState,
-  reducers: {},
+  reducers: {
+    setCurrentChat: (state, action: PayloadAction<string>) => {
+      state.currentChat = action.payload;
+    },
+    resetCurrentChat: state => {
+      state.currentChat = '';
+    },
+  },
   extraReducers(builder) {
     builder.addCase(
       createChat.fulfilled,
@@ -140,6 +153,8 @@ export const chatSlice = createSlice({
     });
   },
 });
+
+export const {setCurrentChat, resetCurrentChat} = chatSlice.actions;
 
 export default chatSlice.reducer;
 

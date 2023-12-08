@@ -21,7 +21,7 @@ function Message({user, message, longPressHandler}: Props) {
         isUserOnline={false}
         displayOnlineStatus={false}
       />
-      <Text>{message.text}</Text>
+      <Text style={styles.text}>{message.text}</Text>
     </Pressable>
   );
 }
@@ -31,6 +31,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 10,
+  },
+  text: {
+    color: 'white',
   },
 });
 

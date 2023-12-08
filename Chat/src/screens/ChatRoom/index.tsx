@@ -9,6 +9,7 @@ import MessageSender from '../../components/MessageSender/indes';
 import {SocketContext} from '../../contexts/SocketContext';
 import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
 import {deleteChat, findChat} from '../../store/slices/chat/chatSlice';
+import {selectCurrentChatId} from '../../store/slices/chat/selectors';
 import {addMessage} from '../../store/slices/message/messageSlice';
 import {selectUser} from '../../store/slices/user/selectors';
 
@@ -21,13 +22,7 @@ function ChatRoom({route, navigation}: ChatRoomProps) {
 
   const {secondUserId} = route.params;
 
-  const currentChat = useAppSelector(state => {
-    return state.chat.chats.find(chat => {
-      return (
-        chat.members.includes(user._id) && chat.members.includes(secondUserId)
-      );
-    });
-  });
+  const currentChatId = useAppSelector(selectCurrentChatId);
 
   useEffect(() => {
     async function fetchUser() {
@@ -52,7 +47,7 @@ function ChatRoom({route, navigation}: ChatRoomProps) {
       return;
     }
     socketState.socket.on('getMessage', (res: IMessage) => {
-      if (!currentChat || currentChat._id !== res.chatId) {
+      if (currentChatId !== res.chatId) {
         return;
       }
       if (res.senderId !== user._id) {
@@ -64,7 +59,7 @@ function ChatRoom({route, navigation}: ChatRoomProps) {
         socketState.socket.off('getMessage');
       }
     };
-  }, [currentChat, dispatch, socketState.socket, user._id]);
+  }, [currentChatId, dispatch, socketState.socket, user._id]);
 
   function backButtonHandler() {
     navigation.navigate('Main');
@@ -76,7 +71,7 @@ function ChatRoom({route, navigation}: ChatRoomProps) {
     });
   }
 
-  return secondUser && currentChat ? (
+  return secondUser && currentChatId ? (
     <View style={styles.container}>
       <ChatRoomHeader
         user={secondUser}
@@ -85,7 +80,7 @@ function ChatRoom({route, navigation}: ChatRoomProps) {
         additionalButton={
           <DeleteButton
             onPressHandler={() => {
-              dispatch(deleteChat(currentChat._id));
+              dispatch(deleteChat(currentChatId));
               navigation.goBack();
             }}
           />
@@ -94,10 +89,10 @@ function ChatRoom({route, navigation}: ChatRoomProps) {
       <MessagesList
         firstUser={user}
         secondUser={secondUser}
-        chatId={currentChat._id}
+        chatId={currentChatId}
       />
       <MessageSender
-        chatId={currentChat._id}
+        chatId={currentChatId}
         messageText={message}
         recipientId={secondUserId}
         setMessageText={setMessage}

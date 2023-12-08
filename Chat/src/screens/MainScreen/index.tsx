@@ -5,6 +5,7 @@ import {
   ISocketPayload,
   SocketActionType,
 } from '../../@types/common';
+import ChatsList from '../../components/ChatsList';
 import MainScreenHeader from '../../components/MainScreenHeader';
 import UsersList from '../../components/UsersList';
 import {SocketContext} from '../../contexts/SocketContext';
@@ -51,6 +52,7 @@ function MainScreen() {
         <MainScreenHeader />
       </View>
       <UsersList />
+      <ChatsList />
     </View>
   );
 }

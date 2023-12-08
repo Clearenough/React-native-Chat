@@ -1,5 +1,6 @@
 import React from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
+import UserIcon from '../common/UserIcon';
 
 interface Props {
   username: string;
@@ -38,9 +39,11 @@ function UserListItem({
 
   return (
     <Pressable style={styles.container} onPress={handler}>
-      <View style={styles.user}>
-        <Text style={styles.text}>{username.slice(0, 2)}</Text>
-      </View>
+      <UserIcon
+        username={username}
+        userStyles={styles.user}
+        textStyles={styles.text}
+      />
       <Text style={styles.usernameText} numberOfLines={1} ellipsizeMode="tail">
         {username}
       </Text>
