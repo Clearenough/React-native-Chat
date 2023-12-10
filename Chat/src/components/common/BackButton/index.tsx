@@ -9,7 +9,7 @@ interface Props {
 function BackButton({handler}: Props) {
   return (
     <Pressable onPress={handler}>
-      <BackSVG color={'black'} />
+      <BackSVG color={'white'} />
     </Pressable>
   );
 }

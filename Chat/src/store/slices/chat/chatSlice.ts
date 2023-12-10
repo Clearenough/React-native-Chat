@@ -53,7 +53,7 @@ export const deleteChat = createAsyncThunk(
 
 export const getUsersChats = createAsyncThunk(
   'chats/getUsersChats',
-  async function (userId: string, {rejectWithValue}) {
+  async function (userId: string, {rejectWithValue, dispatch}) {
     const response = await fetch(chatEndpoints.getUserChats + userId);
     const data: IChat[] | IServerError | string = await response.json();
 
@@ -63,6 +63,10 @@ export const getUsersChats = createAsyncThunk(
         message = errorExtractor(data);
         return rejectWithValue(message);
       }
+    }
+    const chats = data as unknown as IChat[];
+    for (let i = 0; i < chats.length; i++) {
+      dispatch(getMessages(chats[i]._id));
     }
     return data as IChat[];
   },
@@ -104,6 +108,7 @@ export const chatSlice = createSlice({
   initialState,
   reducers: {
     setCurrentChat: (state, action: PayloadAction<string>) => {
+      console.log(action.payload, 'Current Chat Payload');
       state.currentChat = action.payload;
     },
     resetCurrentChat: state => {

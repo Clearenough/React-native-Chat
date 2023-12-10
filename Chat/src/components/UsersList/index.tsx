@@ -34,7 +34,7 @@ function UsersList() {
         firstId: user._id,
         secondId: _id,
       };
-      await dispatch(createChat(newChat));
+      dispatch(createChat(newChat));
       navigation.navigate('ChatRoom', {
         secondUserId: _id,
       });

@@ -66,12 +66,16 @@ function MessagesList({firstUser, secondUser}: Props) {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        renderItem={renderItem}
-        data={[...messages].reverse()}
-        keyExtractor={item => item._id}
-        inverted={true}
-      />
+      {messages ? (
+        <FlatList
+          renderItem={renderItem}
+          data={[...messages].reverse()}
+          keyExtractor={item => item._id}
+          inverted={true}
+        />
+      ) : (
+        <></>
+      )}
     </View>
   );
 }

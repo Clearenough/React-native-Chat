@@ -24,15 +24,15 @@ function UserListItem({
       }
       return (
         <View style={styles.onlineText}>
-          <Text>{username}</Text>
-          <Text>Online</Text>
+          <Text style={styles.text}>{username}</Text>
+          <Text style={styles.text}>Online</Text>
         </View>
       );
     }
     return (
       <View style={styles.onlineText}>
-        <Text>{username}</Text>
-        <Text>Offline</Text>
+        <Text style={styles.text}>{username}</Text>
+        <Text style={styles.text}>Offline</Text>
       </View>
     );
   }

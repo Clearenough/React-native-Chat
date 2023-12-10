@@ -6,6 +6,7 @@ export const userEndpoints = {
   register: baseUserUrl + '/register',
   login: baseUserUrl + '/login',
   findUser: baseUserUrl + '/find/',
+  findMembersInfo: baseUserUrl + '/find/members/',
   getUsers: baseUserUrl + '/',
 };
 

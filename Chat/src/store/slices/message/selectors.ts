@@ -8,7 +8,7 @@ export const selectCurrentChatMessages = (state: RootState) =>
 export const selectLastMessage = createSelector(
   [selectCurrentChatMessages],
   messages => {
-    if (!messages.length) {
+    if (!messages || messages.length === 0) {
       return null;
     }
     return messages[messages.length - 1];

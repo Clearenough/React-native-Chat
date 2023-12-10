@@ -103,6 +103,9 @@ export const messageSlice = createSlice({
     builder.addCase(
       createMessage.fulfilled,
       (state, action: PayloadAction<IMessage>) => {
+        if (!state.messages[action.payload.chatId]) {
+          state.messages[action.payload.chatId] = [];
+        }
         state.messages[action.payload.chatId].push(action.payload);
         state.status = 'resolved';
       },
@@ -114,10 +117,10 @@ export const messageSlice = createSlice({
     builder.addCase(
       getMessages.fulfilled,
       (state, action: PayloadAction<IMessage[]>) => {
-        // console.log(action.payload, 'PAYLOAD');
-        // state.messages = action.payload;
+        if (action.payload.length === 0) {
+          return;
+        }
         state.messages[action.payload[0].chatId] = action.payload;
-        //console.log(state.messages[action.payload[0].chatId], 'CHAT MESSAGES');
         state.status = 'resolved';
       },
     );
