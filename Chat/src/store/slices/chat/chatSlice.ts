@@ -108,7 +108,6 @@ export const chatSlice = createSlice({
   initialState,
   reducers: {
     setCurrentChat: (state, action: PayloadAction<string>) => {
-      console.log(action.payload, 'Current Chat Payload');
       state.currentChat = action.payload;
     },
     resetCurrentChat: state => {

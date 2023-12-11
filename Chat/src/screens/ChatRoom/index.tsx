@@ -8,7 +8,11 @@ import MessagesList from '../../components/MesagesList';
 import MessageSender from '../../components/MessageSender/indes';
 import {SocketContext} from '../../contexts/SocketContext';
 import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
-import {deleteChat, findChat} from '../../store/slices/chat/chatSlice';
+import {
+  deleteChat,
+  findChat,
+  setCurrentChat,
+} from '../../store/slices/chat/chatSlice';
 import {selectCurrentChatId} from '../../store/slices/chat/selectors';
 import {addMessage} from '../../store/slices/message/messageSlice';
 import {selectUser} from '../../store/slices/user/selectors';
@@ -23,8 +27,6 @@ function ChatRoom({route, navigation}: ChatRoomProps) {
   const {secondUserId} = route.params;
 
   const currentChatId = useAppSelector(selectCurrentChatId);
-
-  console.log(currentChatId, 'Current Chat');
 
   useEffect(() => {
     async function fetchUser() {
@@ -65,6 +67,7 @@ function ChatRoom({route, navigation}: ChatRoomProps) {
 
   function backButtonHandler() {
     navigation.navigate('Main');
+    dispatch(setCurrentChat(''));
   }
 
   function userListItemHandler() {

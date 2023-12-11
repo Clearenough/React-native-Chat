@@ -90,6 +90,9 @@ export const messageSlice = createSlice({
       // if (!state.messages.find(message => message._id === action.payload._id)) {
       //   state.messages.push(action.payload);
       // }
+      if (!state.messages[action.payload.chatId]) {
+        state.messages[action.payload.chatId] = [];
+      }
       if (
         !state.messages[action.payload.chatId].find(
           message => message._id === action.payload._id,

@@ -28,6 +28,7 @@ function MessageSender({
   useEffect(() => {
     if (socketState.socket && lastMessage) {
       socketState.socket.emit('sendMessage', lastMessage);
+      console.log(lastMessage, 'EMMIT');
     }
   }, [lastMessage, socketState.socket]);
 

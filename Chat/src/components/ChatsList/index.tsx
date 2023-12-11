@@ -48,7 +48,9 @@ function ChatsList() {
         return null;
       }
       const lastMessage = messages[messages.length - 1];
-      console.log(item._id, 'ITEMS');
+      if (!lastMessage) {
+        return null;
+      }
       return (
         <ChatsListItem
           user={item}
