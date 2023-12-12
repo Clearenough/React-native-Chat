@@ -3,6 +3,7 @@ import {Pressable, StyleSheet, View} from 'react-native';
 import {Text} from 'react-native';
 import {IMessage, IUser} from '../../@types/common';
 import {SocketContext} from '../../contexts/SocketContext';
+import {formatTimeDifference} from '../../helpers/formatTimeDifference';
 import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
 import {selectCurrentChatId} from '../../store/slices/chat/selectors';
 import {
@@ -13,7 +14,7 @@ import UserIcon from '../common/UserIcon';
 
 interface Props {
   pressHandler: () => void;
-  message: string;
+  message: IMessage;
   user: IUser;
 }
 
@@ -61,11 +62,18 @@ function ChatsListItem({pressHandler, message, user}: Props) {
         userStyles={styles.user}
         textStyles={styles.userText}
       />
-      <View>
-        <Text style={styles.userText}>{user.username}</Text>
-        <Text style={styles.text} numberOfLines={2} ellipsizeMode="tail">
-          {message}
-        </Text>
+      <View style={styles.contentContainer}>
+        <View style={styles.usernameContainer}>
+          <Text style={styles.userText}>{user.username}</Text>
+          <Text style={styles.text} numberOfLines={2} ellipsizeMode="tail">
+            {message.text}
+          </Text>
+        </View>
+        <View style={styles.timeContainer}>
+          <Text style={styles.text}>
+            {formatTimeDifference(message.createdAt)}
+          </Text>
+        </View>
       </View>
     </Pressable>
   );
@@ -75,14 +83,30 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     gap: 8,
+    width: 375,
+    alignItems: 'flex-start',
+    maxHeight: 44,
   },
+  contentContainer: {
+    flexDirection: 'row',
+    width: 291,
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+
+  usernameContainer: {
+    maxWidth: 235,
+    justifyContent: 'flex-start',
+  },
+  timeContainer: {},
   text: {
     color: '#C6C7CD',
     fontFamily: 'Inter',
     fontSize: 12,
     fontStyle: 'normal',
     fontWeight: '400',
-    lineHeight: 16.8,
+    lineHeight: 13,
+    overflow: 'hidden',
   },
   user: {
     backgroundColor: 'purple',

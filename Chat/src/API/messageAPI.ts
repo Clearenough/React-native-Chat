@@ -5,11 +5,13 @@ export async function createMessage(
   chatId: string,
   senderId: string,
   text: string,
+  recipientId: string,
 ): Promise<IMessage> {
   const body: IMessageCreate = {
     chatId,
     senderId,
     text,
+    recipientId,
   };
   const response = await fetch(messageEndpoints.message, {
     headers: {'Content-Type': 'application/json'},

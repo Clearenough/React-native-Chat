@@ -150,6 +150,7 @@ export interface IMessage {
   senderId: string;
   recipientId: string;
   text: string;
+  createdAt: string;
 }
 
 export interface IMessageCreate {

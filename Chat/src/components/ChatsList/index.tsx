@@ -54,7 +54,7 @@ function ChatsList() {
       return (
         <ChatsListItem
           user={item}
-          message={lastMessage.text}
+          message={lastMessage}
           pressHandler={() => onPress(item._id, chat._id)}
         />
       );
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   separator: {
-    height: 8,
+    height: 16,
   },
 });
 
