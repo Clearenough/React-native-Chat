@@ -5,7 +5,13 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import {chatEndpoints} from '../../../@constants/apiEndpoint';
-import {IChat, IChatCreate, IServerError} from '../../../@types/common';
+import {
+  IChat,
+  IChatCreate,
+  IChatState,
+  ILastMessage,
+  IServerError,
+} from '../../../@types/common';
 import {errorExtractor} from '../../../helpers/errorExtractor';
 import {getMessages} from '../message/messageSlice';
 
@@ -90,14 +96,21 @@ export const findChat = createAsyncThunk(
 );
 
 export interface ChatState {
-  chats: IChat[];
+  chats: IChatState;
   currentChat: string;
   status: string;
   error: string;
 }
 
 const initialState: ChatState = {
-  chats: [],
+  chats: {
+    [Symbol.iterator]: function* () {
+      const keys = Object.keys(this);
+      for (const key of keys) {
+        yield [key, this[key]] as [string, IChat];
+      }
+    },
+  },
   currentChat: '',
   status: '',
   error: '',
@@ -113,16 +126,27 @@ export const chatSlice = createSlice({
     resetCurrentChat: state => {
       state.currentChat = '';
     },
+    setLastMessage: (state, action: PayloadAction<ILastMessage>) => {
+      const id = action.payload.message.chatId;
+      if (action.payload.isNull) {
+        state.chats[id].lastMessage = action.payload.message;
+      }
+      state.chats[id].lastMessage = action.payload.message;
+    },
   },
   extraReducers(builder) {
     builder.addCase(
       createChat.fulfilled,
       (state, action: PayloadAction<IChat>) => {
         state.status = 'resolved';
-        if (state.chats.find(chat => chat._id === action.payload._id)) {
+        if (state.chats[action.payload._id]) {
           return;
         }
-        state.chats.push(action.payload);
+        state.chats[action.payload._id] = action.payload;
+        // if (state.chats.find(chat => chat._id === action.payload._id)) {
+        //   return;
+        // }
+        // state.chats.push(action.payload);
       },
     );
     builder.addCase(createChat.pending, state => {
@@ -132,7 +156,9 @@ export const chatSlice = createSlice({
     builder.addCase(
       getUsersChats.fulfilled,
       (state, action: PayloadAction<IChat[]>) => {
-        state.chats = action.payload;
+        for (let chat of action.payload) {
+          state.chats[chat._id] = chat;
+        }
         state.status = 'resolved';
       },
     );
@@ -143,7 +169,8 @@ export const chatSlice = createSlice({
     builder.addCase(
       deleteChat.fulfilled,
       (state, action: PayloadAction<string>) => {
-        state.chats = state.chats.filter(ch => ch._id !== action.payload);
+        // state.chats = state.chats.filter(ch => ch._id !== action.payload);
+        delete state.chats[action.payload];
         state.status = 'resolved';
       },
     );
@@ -158,7 +185,8 @@ export const chatSlice = createSlice({
   },
 });
 
-export const {setCurrentChat, resetCurrentChat} = chatSlice.actions;
+export const {setCurrentChat, resetCurrentChat, setLastMessage} =
+  chatSlice.actions;
 
 export default chatSlice.reducer;
 

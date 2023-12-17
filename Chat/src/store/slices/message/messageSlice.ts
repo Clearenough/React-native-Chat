@@ -7,15 +7,18 @@ import {
 import {messageEndpoints} from '../../../@constants/apiEndpoint';
 import {
   IChatMessages,
+  ILastMessage,
   IMessage,
   IMessageCreate,
   IServerError,
 } from '../../../@types/common';
 import {errorExtractor} from '../../../helpers/errorExtractor';
+import {RootState} from '../../store';
+import {setLastMessage} from '../chat/chatSlice';
 
 export const createMessage = createAsyncThunk(
   'messages/createMessage',
-  async function (messageInfo: IMessageCreate, {rejectWithValue}) {
+  async function (messageInfo: IMessageCreate, {rejectWithValue, dispatch}) {
     const response = await fetch(messageEndpoints.message, {
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(messageInfo),
@@ -29,14 +32,20 @@ export const createMessage = createAsyncThunk(
         return rejectWithValue(message);
       }
     }
-
+    console.log('NEW MESSAGE');
+    const lastMessage: ILastMessage = {
+      message: data as IMessage,
+      isNull: false,
+    };
+    dispatch(setLastMessage(lastMessage));
+    console.log('NEW MESSAGE AFTER');
     return data as IMessage;
   },
 );
 
 export const deleteMessage = createAsyncThunk(
   'messages/deleteMessage',
-  async function (message: IMessage, {rejectWithValue}) {
+  async function (message: IMessage, {rejectWithValue, getState, dispatch}) {
     const response = await fetch(messageEndpoints.message + message._id, {
       headers: {'Content-Type': 'application/json'},
       method: 'DELETE',
@@ -49,14 +58,25 @@ export const deleteMessage = createAsyncThunk(
         return rejectWithValue(responseMessage);
       }
     }
-
+    const state = getState() as RootState;
+    const messages = state.message.messages[message.chatId];
+    const index = messages.findIndex(mes => message._id === mes._id);
+    const maxIndex = messages.length - 1;
+    if (index === maxIndex) {
+      if (index === 0) {
+        dispatch(setLastMessage({message, isNull: true}));
+      }
+      dispatch(
+        setLastMessage({message: messages[messages.length - 2], isNull: false}),
+      );
+    }
     return message;
   },
 );
 
 export const getMessages = createAsyncThunk(
   'messages/getMessages',
-  async function (chatId: string, {rejectWithValue}) {
+  async function (chatId: string, {rejectWithValue, dispatch}) {
     const response = await fetch(messageEndpoints.message + chatId);
     const data: IMessage[] | IServerError | string = await response.json();
     let message = '';
@@ -66,6 +86,12 @@ export const getMessages = createAsyncThunk(
         return rejectWithValue(message);
       }
     }
+    const messages = data as IMessage[];
+    const lastMessage = (data as IMessage[])[(data as IMessage[]).length - 1];
+    if (messages.length === 0) {
+      dispatch(setLastMessage({message: lastMessage, isNull: true}));
+    }
+    dispatch(setLastMessage({message: lastMessage, isNull: false}));
     return data as IMessage[];
   },
 );
@@ -109,6 +135,7 @@ export const messageSlice = createSlice({
         if (!state.messages[action.payload.chatId]) {
           state.messages[action.payload.chatId] = [];
         }
+        console.log(action.payload, 'NEW MESSAGE');
         state.messages[action.payload.chatId].push(action.payload);
         state.status = 'resolved';
       },

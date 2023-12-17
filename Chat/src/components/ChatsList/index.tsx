@@ -2,26 +2,25 @@ import {useNavigation} from '@react-navigation/native';
 import React, {useCallback, useEffect, useState} from 'react';
 import {FlatList, ListRenderItemInfo, StyleSheet, View} from 'react-native';
 import {userEndpoints} from '../../@constants/apiEndpoint';
-import {ChatRoomNavigationProp, IUser} from '../../@types/common';
+import {ChatRoomNavigationProp, IChat, IUser} from '../../@types/common';
 import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
 import {setCurrentChat} from '../../store/slices/chat/chatSlice';
-import {selectChats} from '../../store/slices/chat/selectors';
-import {selectMessages} from '../../store/slices/message/selectors';
+import {selectSortedChats} from '../../store/slices/chat/selectors';
 import {selectUser} from '../../store/slices/user/selectors';
 import ChatsListItem from '../ChatsListItem';
 
 function ChatsList() {
   const dispatch = useAppDispatch();
   const navigation = useNavigation<ChatRoomNavigationProp>();
-  const chats = useAppSelector(selectChats);
+  const chats = useAppSelector(selectSortedChats);
   const user = useAppSelector(selectUser);
-  const allMsessages = useAppSelector(selectMessages);
   const [usersInfo, setUsersInfo] = useState<IUser[]>([]);
 
   useEffect(() => {
     async function fetchUsers() {
       const response = await fetch(userEndpoints.findMembersInfo + user._id);
       const memberInfo = await response.json();
+      console.log(memberInfo, 'INFO');
       setUsersInfo(memberInfo);
     }
     fetchUsers();
@@ -38,28 +37,29 @@ function ChatsList() {
   );
 
   const renderItem = useCallback(
-    ({item}: ListRenderItemInfo<IUser>) => {
-      const chat = chats.find(ch => ch.members.includes(item._id));
-      if (!chat) {
+    ({item}: ListRenderItemInfo<IChat>) => {
+      if (!item.lastMessage) {
         return null;
       }
-      const messages = allMsessages[chat._id];
-      if (!messages) {
-        return null;
-      }
-      const lastMessage = messages[messages.length - 1];
-      if (!lastMessage) {
-        return null;
-      }
+      // const messages = allMsessages[chat._id];
+      // if (!messages) {
+      //   return null;
+      // }
+      // const lastMessage = messages[messages.length - 1];
+      // if (!lastMessage) {
+      //   return null;
+      // }
+      const secondMemberId = item.members.find(m => m !== user._id);
+      const secondUser = usersInfo.find(us => secondMemberId === us._id)!;
       return (
         <ChatsListItem
-          user={item}
-          message={lastMessage}
-          pressHandler={() => onPress(item._id, chat._id)}
+          user={secondUser}
+          message={item.lastMessage}
+          pressHandler={() => onPress(item._id, item._id)}
         />
       );
     },
-    [allMsessages, chats, onPress],
+    [onPress, user._id, usersInfo],
   );
 
   const renderSeparator = () => <View style={styles.separator} />;
@@ -68,7 +68,7 @@ function ChatsList() {
     <View style={styles.container}>
       <FlatList
         renderItem={renderItem}
-        data={usersInfo}
+        data={chats}
         keyExtractor={item => item._id}
         // ListFooterComponentStyle={styles.container}
         ItemSeparatorComponent={renderSeparator}

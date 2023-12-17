@@ -71,7 +71,7 @@ function ChatsListItem({pressHandler, message, user}: Props) {
         </View>
         <View style={styles.timeContainer}>
           <Text style={styles.text}>
-            {formatTimeDifference(message.createdAt)}
+            {formatTimeDifference(message.createdAt).time}
           </Text>
         </View>
       </View>
