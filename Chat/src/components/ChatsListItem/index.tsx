@@ -22,7 +22,6 @@ function ChatsListItem({pressHandler, message, user}: Props) {
   const {socketState} = useContext(SocketContext);
   const dispatch = useAppDispatch();
   const currentChatId = useAppSelector(selectCurrentChatId);
-
   useEffect(() => {
     if (socketState.socket === null) {
       return;
@@ -37,14 +36,13 @@ function ChatsListItem({pressHandler, message, user}: Props) {
         socketState.socket.off('getMessage');
       }
     };
-  }, [currentChatId, dispatch, socketState.socket, user._id]);
+  }, [currentChatId, dispatch, socketState.socket, user, user._id]);
 
   useEffect(() => {
     if (socketState.socket === null) {
       return;
     }
     socketState.socket.on('getDeletedMessage', (res: IMessage) => {
-      console.log('DELETE MESSASGE');
       dispatch(deleteMessage(res));
     });
     return () => {

@@ -32,13 +32,11 @@ export const createMessage = createAsyncThunk(
         return rejectWithValue(message);
       }
     }
-    console.log('NEW MESSAGE');
     const lastMessage: ILastMessage = {
       message: data as IMessage,
       isNull: false,
     };
     dispatch(setLastMessage(lastMessage));
-    console.log('NEW MESSAGE AFTER');
     return data as IMessage;
   },
 );
@@ -135,7 +133,6 @@ export const messageSlice = createSlice({
         if (!state.messages[action.payload.chatId]) {
           state.messages[action.payload.chatId] = [];
         }
-        console.log(action.payload, 'NEW MESSAGE');
         state.messages[action.payload.chatId].push(action.payload);
         state.status = 'resolved';
       },

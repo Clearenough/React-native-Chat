@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import {useCallback} from 'react';
 import {FlatList, ListRenderItemInfo, StyleSheet, View} from 'react-native';
 import {IMessage, IUser} from '../../@types/common';
@@ -7,6 +7,7 @@ import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
 import {deleteMessage} from '../../store/slices/message/messageSlice';
 import {selectCurrentChatMessages} from '../../store/slices/message/selectors';
 import {selectUser} from '../../store/slices/user/selectors';
+import DeleteModal from '../common/DeleteModal';
 import Message from '../Message';
 
 interface Props {
@@ -16,11 +17,12 @@ interface Props {
 }
 
 function MessagesList({firstUser, secondUser}: Props) {
+  const [isVisible, setIsVisible] = useState(false);
   const dispatch = useAppDispatch();
   const messages = useAppSelector(selectCurrentChatMessages);
   const {socketState} = useContext(SocketContext);
   const user = useAppSelector(selectUser);
-
+  console.log(messages);
   // useEffect(() => {
   //   if (socketState.socket === null) {
   //     return;
@@ -37,7 +39,11 @@ function MessagesList({firstUser, secondUser}: Props) {
   //   };
   // }, [dispatch, socketState.socket]);
 
-  const longPressHandler = useCallback(
+  const modalToogle = useCallback(() => {
+    setIsVisible(!isVisible);
+  }, [isVisible]);
+
+  const onDeleteMessage = useCallback(
     (message: IMessage) => {
       if (socketState.socket === null) {
         return;
@@ -48,8 +54,9 @@ function MessagesList({firstUser, secondUser}: Props) {
       socketState.socket.emit('deleteMessage', message);
       console.log(message.text, 'Emited Message');
       dispatch(deleteMessage(message));
+      setIsVisible(!isVisible);
     },
-    [dispatch, socketState.socket, user._id],
+    [dispatch, isVisible, socketState.socket, user._id],
   );
 
   const renderItem = useCallback(
@@ -61,14 +68,22 @@ function MessagesList({firstUser, secondUser}: Props) {
         senderUser = secondUser;
       }
       return (
-        <Message
-          user={senderUser}
-          message={item}
-          longPressHandler={() => longPressHandler(item)}
-        />
+        <>
+          <Message
+            user={senderUser}
+            message={item}
+            longPressHandler={modalToogle}
+          />
+          <DeleteModal
+            deleteHandler={() => onDeleteMessage(item)}
+            setIsVisible={setIsVisible}
+            text={'message'}
+            isVisible={isVisible}
+          />
+        </>
       );
     },
-    [firstUser, longPressHandler, secondUser],
+    [firstUser, isVisible, modalToogle, onDeleteMessage, secondUser],
   );
 
   return (

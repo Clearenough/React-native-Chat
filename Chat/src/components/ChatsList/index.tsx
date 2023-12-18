@@ -20,7 +20,6 @@ function ChatsList() {
     async function fetchUsers() {
       const response = await fetch(userEndpoints.findMembersInfo + user._id);
       const memberInfo = await response.json();
-      console.log(memberInfo, 'INFO');
       setUsersInfo(memberInfo);
     }
     fetchUsers();
@@ -41,6 +40,9 @@ function ChatsList() {
       if (!item.lastMessage) {
         return null;
       }
+      if (usersInfo.length === 0) {
+        return null;
+      }
       // const messages = allMsessages[chat._id];
       // if (!messages) {
       //   return null;
@@ -55,7 +57,7 @@ function ChatsList() {
         <ChatsListItem
           user={secondUser}
           message={item.lastMessage}
-          pressHandler={() => onPress(item._id, item._id)}
+          pressHandler={() => onPress(secondUser._id, item._id)}
         />
       );
     },
