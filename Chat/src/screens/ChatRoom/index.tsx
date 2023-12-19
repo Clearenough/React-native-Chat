@@ -28,8 +28,6 @@ function ChatRoom({route, navigation}: ChatRoomProps) {
 
   const currentChatId = useAppSelector(selectCurrentChatId);
 
-  console.log(secondUserId, 'USER', currentChatId, 'CHAT');
-
   useEffect(() => {
     async function fetchUser() {
       const response = await fetch(userEndpoints.findUser + secondUserId);

@@ -22,7 +22,6 @@ function MessagesList({firstUser, secondUser}: Props) {
   const messages = useAppSelector(selectCurrentChatMessages);
   const {socketState} = useContext(SocketContext);
   const user = useAppSelector(selectUser);
-  console.log(messages);
   // useEffect(() => {
   //   if (socketState.socket === null) {
   //     return;
@@ -52,7 +51,6 @@ function MessagesList({firstUser, secondUser}: Props) {
         return;
       }
       socketState.socket.emit('deleteMessage', message);
-      console.log(message.text, 'Emited Message');
       dispatch(deleteMessage(message));
       setIsVisible(!isVisible);
     },

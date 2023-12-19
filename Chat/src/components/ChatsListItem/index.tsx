@@ -99,6 +99,9 @@ function ChatsListItem({pressHandler, message, user, chat}: Props) {
   });
 
   useEffect(() => {
+    if (!user) {
+      return;
+    }
     if (socketState.socket === null) {
       return;
     }

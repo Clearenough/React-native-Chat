@@ -143,6 +143,7 @@ export const chatSlice = createSlice({
           return;
         }
         state.chats[action.payload._id] = action.payload;
+        console.log('chat created');
         // if (state.chats.find(chat => chat._id === action.payload._id)) {
         //   return;
         // }
