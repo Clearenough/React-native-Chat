@@ -133,11 +133,23 @@ export interface IServerError {
 export interface IChat {
   members: [string, string];
   _id: string;
+  lastMessage: IMessage | null;
 }
+
+export interface IChatState extends Iterable<[string, IChat]> {
+  [key: string]: IChat;
+  [Symbol.iterator](): IterableIterator<[string, IChat]>;
+}
+
+// Implement the iterator
 
 export interface IChatCreate {
   firstId: string;
   secondId: string;
+}
+
+export interface IChatMessages {
+  [key: string]: IMessage[];
 }
 
 export interface IMessage {
@@ -146,6 +158,12 @@ export interface IMessage {
   senderId: string;
   recipientId: string;
   text: string;
+  createdAt: string;
+}
+
+export interface ILastMessage {
+  message: IMessage;
+  isNull: boolean;
 }
 
 export interface IMessageCreate {
@@ -163,4 +181,9 @@ export interface ServerToClientEvents {
 
 export interface ClientToServerEvents {
   hello: () => void;
+}
+
+export interface ITime {
+  time: string;
+  diff: number;
 }

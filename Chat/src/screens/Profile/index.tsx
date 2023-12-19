@@ -44,7 +44,7 @@ function Profile({route}: ProfileRoomProps) {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 5,
+    paddingTop: 65,
   },
 });
 

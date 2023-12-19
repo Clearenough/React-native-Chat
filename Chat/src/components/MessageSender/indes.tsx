@@ -25,11 +25,9 @@ function MessageSender({
   const {_id} = useAppSelector(selectUser);
   const lastMessage = useAppSelector(selectLastMessage);
   const dispatch = useAppDispatch();
-
   useEffect(() => {
-    if (socketState.socket) {
+    if (socketState.socket && lastMessage) {
       socketState.socket.emit('sendMessage', lastMessage);
-      console.log(lastMessage);
     }
   }, [lastMessage, socketState.socket]);
 

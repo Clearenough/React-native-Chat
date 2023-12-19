@@ -1,17 +1,17 @@
 import React from 'react';
 import {Pressable} from 'react-native';
-import BackSVG from '../../../@svg/BackSVG';
+import ProfileSVG from '../../../@svg/ProfileSVG';
 
 interface Props {
   handler: () => void;
 }
 
-function BackButton({handler}: Props) {
+function DropoutButton({handler}: Props) {
   return (
     <Pressable onPress={handler}>
-      <BackSVG color={'white'} />
+      <ProfileSVG />
     </Pressable>
   );
 }
 
-export default BackButton;
+export default DropoutButton;
