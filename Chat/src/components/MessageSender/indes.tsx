@@ -56,12 +56,15 @@ function MessageSender({
 
 const styles = StyleSheet.create({
   container: {
+    alignSelf: 'center',
     flexDirection: 'row',
     justifyContent: 'space-around',
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    width: '100%',
   },
   textInput: {
     width: '70%',
-    backgroundColor: 'white',
+    color: '#fff',
   },
 });
 

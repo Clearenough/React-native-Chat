@@ -1,9 +1,8 @@
-import React, {useContext} from 'react';
-import {StyleSheet, View} from 'react-native';
+import React from 'react';
+import {StyleSheet, Text, View} from 'react-native';
 import {IUser} from '../../@types/common';
-import {SocketContext} from '../../contexts/SocketContext';
 import BackButton from '../common/BackButton';
-import UserListItem from '../UserListItem';
+import UserIcon from '../common/UserIcon';
 
 interface Props {
   user: IUser;
@@ -12,27 +11,26 @@ interface Props {
   userListItemHandler?: () => void;
 }
 
-function ChatRoomHeader({
-  user,
-  additionalButton,
-  backButtonHandler,
-  userListItemHandler,
-}: Props) {
-  const {socketState} = useContext(SocketContext);
-
+function ChatRoomHeader({user, additionalButton, backButtonHandler}: Props) {
   return (
     <View style={styles.container}>
       <BackButton handler={backButtonHandler} />
       <View style={styles.userContainer}>
-        <UserListItem
+        {/* <UserListItem
           username={user.username}
           handler={userListItemHandler}
-          displayOnlineStatus={true}
+          displayOnlineStatus={false}
           isUserOnline={socketState.onlineUsers.some(
             u => u.userId === user._id,
           )}
           onlineStatusDisplayType="text"
+        /> */}
+        <UserIcon
+          username={user.username}
+          userStyles={styles.user}
+          textStyles={styles.text}
         />
+        <Text style={[styles.text, styles.username]}>{user.username}</Text>
       </View>
       {additionalButton}
     </View>
@@ -41,14 +39,33 @@ function ChatRoomHeader({
 
 const styles = StyleSheet.create({
   container: {
+    width: 343,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    // padding: 5,
+    alignSelf: 'center',
   },
   userContainer: {
-    flexDirection: 'row',
     alignItems: 'center',
+  },
+  user: {
+    backgroundColor: 'purple',
+    borderRadius: 100,
+    height: 44,
+    width: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  text: {
+    color: '#fff',
+    fontFamily: 'Inter',
+    fontSize: 14,
+    fontStyle: 'normal',
+    fontWeight: '600',
+    lineHeight: 19.6,
+  },
+  username: {
+    fontSize: 12,
   },
 });
 

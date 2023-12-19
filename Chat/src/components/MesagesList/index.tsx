@@ -102,7 +102,10 @@ function MessagesList({firstUser, secondUser}: Props) {
 
 const styles = StyleSheet.create({
   container: {
+    width: 343,
+    alignSelf: 'center',
     flex: 1,
+    paddingBottom: 10,
   },
 });
 

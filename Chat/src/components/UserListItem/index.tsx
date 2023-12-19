@@ -44,7 +44,7 @@ function UserListItem({
         userStyles={styles.user}
         textStyles={styles.text}
       />
-      <Text style={styles.usernameText} numberOfLines={1} ellipsizeMode="tail">
+      <Text style={styles.usernameText} numberOfLines={1}>
         {username}
       </Text>
       {displayOnlineStatus && onlineStatusDisplay()}

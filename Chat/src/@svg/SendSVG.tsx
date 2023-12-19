@@ -8,7 +8,8 @@ function SendSVG(): React.JSX.Element {
       fill="none"
       viewBox="0 0 24 24"
       width={24}
-      height={24}>
+      height={24}
+      color={'white'}>
       <Path
         stroke="#000"
         strokeLinecap="round"
