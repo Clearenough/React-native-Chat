@@ -1,6 +1,7 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useCallback, useEffect, useState} from 'react';
 import {FlatList, ListRenderItemInfo, StyleSheet, View} from 'react-native';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {userEndpoints} from '../../@constants/apiEndpoint';
 import {ChatRoomNavigationProp, IChat, IUser} from '../../@types/common';
 import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
@@ -54,11 +55,14 @@ function ChatsList() {
       const secondMemberId = item.members.find(m => m !== user._id);
       const secondUser = usersInfo.find(us => secondMemberId === us._id)!;
       return (
-        <ChatsListItem
-          user={secondUser}
-          message={item.lastMessage}
-          pressHandler={() => onPress(secondUser._id, item._id)}
-        />
+        <View>
+          <ChatsListItem
+            user={secondUser}
+            message={item.lastMessage}
+            pressHandler={() => onPress(secondUser._id, item._id)}
+            chat={item}
+          />
+        </View>
       );
     },
     [onPress, user._id, usersInfo],
@@ -67,17 +71,19 @@ function ChatsList() {
   const renderSeparator = () => <View style={styles.separator} />;
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        renderItem={renderItem}
-        data={chats}
-        keyExtractor={item => item._id}
-        // ListFooterComponentStyle={styles.container}
-        ItemSeparatorComponent={renderSeparator}
-        // ListHeaderComponent={edgeSeparator}
-        // ListFooterComponent={edgeSeparator}
-      />
-    </View>
+    <GestureHandlerRootView>
+      <View style={styles.container}>
+        <FlatList
+          renderItem={renderItem}
+          data={chats}
+          keyExtractor={item => item._id}
+          // ListFooterComponentStyle={styles.container}
+          ItemSeparatorComponent={renderSeparator}
+          // ListHeaderComponent={edgeSeparator}
+          // ListFooterComponent={edgeSeparator}
+        />
+      </View>
+    </GestureHandlerRootView>
   );
 }
 

@@ -9,7 +9,7 @@ interface Props {
 function DeleteButton({onPressHandler}: Props) {
   return (
     <Pressable onPress={onPressHandler}>
-      <DeleteSVG color="black" />
+      <DeleteSVG />
     </Pressable>
   );
 }
