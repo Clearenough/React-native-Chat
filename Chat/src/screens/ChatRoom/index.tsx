@@ -111,7 +111,6 @@ function ChatRoom({route, navigation}: ChatRoomProps) {
 const styles = StyleSheet.create({
   container: {
     paddingTop: 64,
-    paddingBottom: 21,
     flex: 1,
   },
 });

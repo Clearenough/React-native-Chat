@@ -44,12 +44,16 @@ function MessageSender({
 
   return (
     <View style={styles.container}>
-      <TextInput
-        value={messageText}
-        onChangeText={setMessageText}
-        style={styles.textInput}
-      />
-      <SendButton handler={onPressHandler} />
+      <View style={styles.inputContainer}>
+        <TextInput
+          value={messageText}
+          onChangeText={setMessageText}
+          style={styles.textInput}
+        />
+        <View style={styles.senderContainer}>
+          <SendButton handler={onPressHandler} />
+        </View>
+      </View>
     </View>
   );
 }
@@ -58,13 +62,29 @@ const styles = StyleSheet.create({
   container: {
     alignSelf: 'center',
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
     width: '100%',
+    height: 84,
+    // paddingBottom: 21,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#050833',
+    borderRadius: 15,
+    height: 32,
+    marginTop: 12,
+    alignItems: 'center',
   },
   textInput: {
-    width: '70%',
+    height: 13.5,
+    width: 319,
+    marginVertical: 4,
+    marginHorizontal: 12,
     color: '#fff',
+  },
+  senderContainer: {
+    paddingRight: 12,
   },
 });
 
