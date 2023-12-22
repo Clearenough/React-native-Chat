@@ -13,11 +13,11 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import DeleteSVG from '../../@svg/DeleteSVG';
-import {IChat, IMessage, IUser} from '../../@types/common';
+import {IChat, ILastMessage, IMessage, IUser} from '../../@types/common';
 import {SocketContext} from '../../contexts/SocketContext';
 import {formatTimeDifference} from '../../helpers/formatTimeDifference';
 import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
-import {deleteChat} from '../../store/slices/chat/chatSlice';
+import {deleteChat, setLastMessage} from '../../store/slices/chat/chatSlice';
 import {selectCurrentChatId} from '../../store/slices/chat/selectors';
 import {
   addMessage,
@@ -106,8 +106,14 @@ function ChatsListItem({pressHandler, message, user, chat}: Props) {
       return;
     }
     socketState.socket.on('getMessage', (res: IMessage) => {
-      if (res.senderId !== user._id) {
+      console.log('get Message', res, res.senderId, user._id);
+      if (res.senderId === user._id) {
         dispatch(addMessage(res));
+        const lastMessage: ILastMessage = {
+          message: res,
+          isNull: false,
+        };
+        dispatch(setLastMessage(lastMessage));
       }
     });
     return () => {

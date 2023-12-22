@@ -51,6 +51,7 @@ function ChatRoom({route, navigation}: ChatRoomProps) {
       return;
     }
     socketState.socket.on('getMessage', (res: IMessage) => {
+      console.log('getNessage', res);
       if (currentChatId !== res.chatId) {
         return;
       }

@@ -27,6 +27,7 @@ function MessageSender({
   const dispatch = useAppDispatch();
   useEffect(() => {
     if (socketState.socket && lastMessage) {
+      console.log('emmit', lastMessage);
       socketState.socket.emit('sendMessage', lastMessage);
     }
   }, [lastMessage, socketState.socket]);

@@ -6,6 +6,7 @@ import {
   IUserSignIn,
   IUserSignUp,
 } from '../../../@types/common';
+import {errorExtractor} from '../../../helpers/errorExtractor';
 
 export const userAuthentication = createAsyncThunk<
   IUser,
@@ -43,6 +44,28 @@ export const userAuthentication = createAsyncThunk<
     return rejectWithValue(message);
   }
   return data;
+});
+
+export const userDelete = createAsyncThunk<
+  null,
+  string,
+  {
+    rejectValue: string;
+  }
+>('users/userDelete', async function (userId, {rejectWithValue}) {
+  const response = await fetch(userEndpoints.deleteUser + userId, {
+    headers: {'Content-Type': 'application/json'},
+    method: 'DELETE',
+  });
+  const data: IServerError | string = await response.json();
+  let responseMessage = '';
+  if (!response.ok) {
+    if (typeof data !== 'string') {
+      responseMessage = errorExtractor(data);
+      return rejectWithValue(responseMessage);
+    }
+  }
+  return null;
 });
 
 export interface UserState {
@@ -91,6 +114,20 @@ export const userSlice = createSlice({
         state.name = action.payload.name;
       })
       .addCase(userAuthentication.rejected, (state, action) => {
+        if (action.payload) {
+          state.error = action.payload;
+        }
+        state.status = 'error';
+      })
+      .addCase(userDelete.pending, state => {
+        state.status = 'pending';
+        state.error = '';
+      })
+      .addCase(userDelete.fulfilled, state => {
+        state.status = 'resolved';
+        state._id = '';
+      })
+      .addCase(userDelete.rejected, (state, action) => {
         if (action.payload) {
           state.error = action.payload;
         }

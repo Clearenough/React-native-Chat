@@ -8,6 +8,7 @@ export const userEndpoints = {
   findUser: baseUserUrl + '/find/',
   findMembersInfo: baseUserUrl + '/find/members/',
   getUsers: baseUserUrl + '/',
+  deleteUser: baseUserUrl + '/',
 };
 
 export const chatEndpoints = {
