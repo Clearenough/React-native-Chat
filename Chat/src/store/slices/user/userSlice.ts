@@ -1,4 +1,9 @@
-import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
+import {
+  createSlice,
+  createAsyncThunk,
+  PayloadAction,
+  AnyAction,
+} from '@reduxjs/toolkit';
 import {userEndpoints} from '../../../@constants/apiEndpoint';
 import {
   IServerError,
@@ -95,6 +100,30 @@ export const findMembersInfo = createAsyncThunk<
   return data;
 });
 
+export const getUsers = createAsyncThunk(
+  'users/users',
+  async function (_, {rejectWithValue}) {
+    const response = await fetch(userEndpoints.getUsers);
+    const data: IUser[] | IServerError | string = await response.json();
+    let message = '';
+    if (!response.ok) {
+      if (typeof data === 'string') {
+        message = data;
+      } else if ('message' in data) {
+        message = data.message;
+      }
+    }
+
+    if (typeof data === 'string') {
+      return rejectWithValue(message);
+    }
+    if ('message' in data) {
+      return rejectWithValue(message);
+    }
+    return data;
+  },
+);
+
 export interface IUserState {
   token: string;
   _id: string;
@@ -107,6 +136,7 @@ export interface IUserState {
 export interface IUserSliceState {
   user: IUser;
   membersInfos: IUser[];
+  users: IUser[];
   status: string;
   error: string;
 }
@@ -121,6 +151,7 @@ const user: IUser = {
 const initialState: IUserSliceState = {
   user,
   membersInfos: [],
+  users: [],
   status: '',
   error: '',
 };
@@ -152,12 +183,6 @@ export const userSlice = createSlice({
         state.user.username = action.payload.username;
         state.user.name = action.payload.name;
       })
-      .addCase(userAuthentication.rejected, (state, action) => {
-        if (action.payload) {
-          state.error = action.payload;
-        }
-        state.status = 'error';
-      })
       .addCase(userDelete.pending, state => {
         state.status = 'pending';
         state.error = '';
@@ -165,12 +190,6 @@ export const userSlice = createSlice({
       .addCase(userDelete.fulfilled, state => {
         state.status = 'resolved';
         state.user._id = '';
-      })
-      .addCase(userDelete.rejected, (state, action) => {
-        if (action.payload) {
-          state.error = action.payload;
-        }
-        state.status = 'error';
       })
       .addCase(findMembersInfo.pending, state => {
         state.status = 'pending';
@@ -181,11 +200,18 @@ export const userSlice = createSlice({
         state.error = '';
         state.membersInfos = action.payload;
       })
-      .addCase(findMembersInfo.rejected, (state, action) => {
-        if (action.payload) {
-          state.error = action.payload;
-        }
+      .addCase(getUsers.pending, state => {
+        state.status = 'pending';
+        state.error = '';
+      })
+      .addCase(getUsers.fulfilled, (state, action) => {
+        state.status = 'resolved';
+        state.error = '';
+        state.users = action.payload.filter(item => item._id !== user._id);
+      })
+      .addMatcher(isError, (state, action: PayloadAction<string>) => {
         state.status = 'error';
+        state.error = action.payload;
       });
   },
 });
@@ -193,3 +219,7 @@ export const userSlice = createSlice({
 export const {logout} = userSlice.actions;
 
 export default userSlice.reducer;
+
+function isError(action: AnyAction) {
+  return action.type.endsWith('rejected');
+}

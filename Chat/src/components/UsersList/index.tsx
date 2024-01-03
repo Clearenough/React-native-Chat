@@ -1,14 +1,14 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useCallback, useContext, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect} from 'react';
 import {FlatList, ListRenderItemInfo, StyleSheet, View} from 'react-native';
 
-import {userEndpoints} from '../../@constants/apiEndpoint';
 import {ChatRoomNavigationProp, IChatCreate, IUser} from '../../@types/common';
 import {SocketContext} from '../../contexts/SocketContext';
 
 import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
 import {createChat} from '../../store/slices/chat/chatSlice';
-import {selectUser} from '../../store/slices/user/selectors';
+import {selectUser, selectUsers} from '../../store/slices/user/selectors';
+import {getUsers} from '../../store/slices/user/userSlice';
 import UserListItem from '../UserListItem';
 
 function UsersList() {
@@ -17,16 +17,18 @@ function UsersList() {
   const user = useAppSelector(selectUser);
   const navigation = useNavigation<ChatRoomNavigationProp>();
 
-  const [users, setUsers] = useState<IUser[]>([]);
-
+  // const [users, setUsers] = useState<IUser[]>([]);
+  const users = useAppSelector(selectUsers);
+  console.log(users);
   useEffect(() => {
-    const fetchUsers = async () => {
-      const response = await fetch(userEndpoints.getUsers);
-      const data: IUser[] = await response.json();
-      setUsers(data.filter(item => item._id !== user._id));
-    };
-    fetchUsers();
-  }, [user, socketState]);
+    // const fetchUsers = async () => {
+    //   const response = await fetch(userEndpoints.getUsers);
+    //   const data: IUser[] = await response.json();
+    //   setUsers(data.filter(item => item._id !== user._id));
+    // };
+    // fetchUsers();
+    dispatch(getUsers());
+  }, [user, socketState, dispatch]);
 
   const onPress = useCallback(
     async (_id: string) => {

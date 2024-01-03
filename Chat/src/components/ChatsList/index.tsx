@@ -31,7 +31,7 @@ function ChatsList() {
     dispatch(findMembersInfo(user._id));
   }, [user._id, chats, dispatch]);
 
-  console.log(chats, 'CHATS');
+  //console.log(chats, 'CHATS');
 
   const onPress = useCallback(
     (secondUserId: string, chatId: string) => {
@@ -61,7 +61,7 @@ function ChatsList() {
       // }
       const secondMemberId = item.members.find(m => m !== user._id);
       const secondUser = usersInfo.find(us => secondMemberId === us._id)!;
-      console.log('lastMessage', item.lastMessage);
+      //('lastMessage', item.lastMessage);
       if (!secondUser) {
         return null;
       }
