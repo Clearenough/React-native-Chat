@@ -51,6 +51,7 @@ function ChatRoom({route, navigation}: ChatRoomProps) {
       return;
     }
     socketState.socket.on('getMessage', (res: IMessage) => {
+      console.log('getNessage', res);
       if (currentChatId !== res.chatId) {
         return;
       }
@@ -111,7 +112,6 @@ function ChatRoom({route, navigation}: ChatRoomProps) {
 const styles = StyleSheet.create({
   container: {
     paddingTop: 64,
-    paddingBottom: 21,
     flex: 1,
   },
 });

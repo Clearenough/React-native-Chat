@@ -1,21 +1,30 @@
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import {IUser} from '../../@types/common';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {ChatRoomNavigationProp, IUser} from '../../@types/common';
 import BackButton from '../common/BackButton';
 import UserIcon from '../common/UserIcon';
 
 interface Props {
   user: IUser;
-  additionalButton: React.JSX.Element;
+  additionalButton?: React.JSX.Element;
   backButtonHandler: () => void;
   userListItemHandler?: () => void;
 }
 
 function ChatRoomHeader({user, additionalButton, backButtonHandler}: Props) {
+  const navigation = useNavigation<ChatRoomNavigationProp>();
+
+  function onPress() {
+    navigation.navigate('Profile', {
+      userId: user._id,
+    });
+  }
+
   return (
     <View style={styles.container}>
       <BackButton handler={backButtonHandler} />
-      <View style={styles.userContainer}>
+      <Pressable style={styles.userContainer} onPress={onPress}>
         {/* <UserListItem
           username={user.username}
           handler={userListItemHandler}
@@ -31,7 +40,7 @@ function ChatRoomHeader({user, additionalButton, backButtonHandler}: Props) {
           textStyles={styles.text}
         />
         <Text style={[styles.text, styles.username]}>{user.username}</Text>
-      </View>
+      </Pressable>
       {additionalButton}
     </View>
   );

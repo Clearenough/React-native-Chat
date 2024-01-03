@@ -16,20 +16,17 @@ function ChatsList() {
   const chats = useAppSelector(selectSortedChats);
   const user = useAppSelector(selectUser);
   const [usersInfo, setUsersInfo] = useState<IUser[]>([]);
-  console.log(
-    chats.map(ch => ch.members),
-    'CHATS',
-    usersInfo.map(inf => inf._id),
-    'INFOS',
-  );
   useEffect(() => {
     async function fetchUsers() {
       const response = await fetch(userEndpoints.findMembersInfo + user._id);
-      const memberInfo = await response.json();
-      setUsersInfo(memberInfo);
+      const memberInfo: IUser[] = await response.json();
+      const filtered = memberInfo.filter(m => m !== null);
+      setUsersInfo(filtered);
     }
     fetchUsers();
   }, [user._id, chats]);
+
+  console.log(chats, 'CHATS');
 
   const onPress = useCallback(
     (secondUserId: string, chatId: string) => {
@@ -59,6 +56,7 @@ function ChatsList() {
       // }
       const secondMemberId = item.members.find(m => m !== user._id);
       const secondUser = usersInfo.find(us => secondMemberId === us._id)!;
+      console.log('lastMessage', item.lastMessage);
       if (!secondUser) {
         return null;
       }
