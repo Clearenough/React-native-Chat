@@ -1,7 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {userEndpoints} from '../../@constants/apiEndpoint';
-import {ChatRoomProps, IMessage, IUser} from '../../@types/common';
+import {ChatRoomProps, IMessage} from '../../@types/common';
 import ChatRoomHeader from '../../components/ChatRoomHeader';
 import DeleteButton from '../../components/common/DeleteButton';
 import MessagesList from '../../components/MesagesList';
@@ -15,27 +14,29 @@ import {
 } from '../../store/slices/chat/chatSlice';
 import {selectCurrentChatId} from '../../store/slices/chat/selectors';
 import {addMessage} from '../../store/slices/message/messageSlice';
-import {selectUser} from '../../store/slices/user/selectors';
+import {selectUser, selectUsers} from '../../store/slices/user/selectors';
 
 function ChatRoom({route, navigation}: ChatRoomProps) {
   const {socketState} = useContext(SocketContext);
   const user = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
-  const [secondUser, setSecondUser] = useState<IUser>();
+  //const [secondUser, setSecondUser] = useState<IUser>();
   const [message, setMessage] = useState<string>('');
 
   const {secondUserId} = route.params;
-
+  const secondUser = useAppSelector(selectUsers).find(
+    u => u._id === secondUserId,
+  )!;
   const currentChatId = useAppSelector(selectCurrentChatId);
 
-  useEffect(() => {
-    async function fetchUser() {
-      const response = await fetch(userEndpoints.findUser + secondUserId);
-      const data: IUser = await response.json();
-      setSecondUser(data);
-    }
-    fetchUser();
-  }, [secondUserId]);
+  // useEffect(() => {
+  //   async function fetchUser() {
+  //     const response = await fetch(userEndpoints.findUser + secondUserId);
+  //     const data: IUser = await response.json();
+  //     setSecondUser(data);
+  //   }
+  //   fetchUser();
+  // }, [secondUserId]);
 
   useEffect(() => {
     dispatch(

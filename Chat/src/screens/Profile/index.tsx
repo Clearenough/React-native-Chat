@@ -1,32 +1,29 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import {userEndpoints} from '../../@constants/apiEndpoint';
-import {
-  ChatRoomNavigationProp,
-  IUser,
-  ProfileRoomProps,
-} from '../../@types/common';
+import {ChatRoomNavigationProp, ProfileRoomProps} from '../../@types/common';
 import BackButton from '../../components/common/BackButton';
 import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
-import {selectUser} from '../../store/slices/user/selectors';
+import {selectUser, selectUsers} from '../../store/slices/user/selectors';
 import {logout, userDelete} from '../../store/slices/user/userSlice';
 
 function Profile({route}: ProfileRoomProps) {
-  const [user, setUser] = useState<IUser>();
+  // const [user, setUser] = useState<IUser>();
   const navigation = useNavigation<ChatRoomNavigationProp>();
   const currentUser = useAppSelector(selectUser);
   const dispatch = useAppDispatch();
   const {userId} = route.params;
 
-  useEffect(() => {
-    async function fetchUser() {
-      const response = await fetch(userEndpoints.findUser + userId);
-      const data: IUser = await response.json();
-      setUser(data);
-    }
-    fetchUser();
-  }, [userId]);
+  const user = useAppSelector(selectUsers).find(u => u._id === userId)!;
+
+  // useEffect(() => {
+  //   async function fetchUser() {
+  //     const response = await fetch(userEndpoints.findUser + userId);
+  //     const data: IUser = await response.json();
+  //     setUser(data);
+  //   }
+  //   fetchUser();
+  // }, [userId]);
 
   function backButtonHandler() {
     navigation.goBack();

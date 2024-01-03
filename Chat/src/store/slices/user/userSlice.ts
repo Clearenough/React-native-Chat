@@ -1,4 +1,9 @@
-import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
+import {
+  createSlice,
+  createAsyncThunk,
+  PayloadAction,
+  AnyAction,
+} from '@reduxjs/toolkit';
 import {userEndpoints} from '../../../@constants/apiEndpoint';
 import {
   IServerError,
@@ -68,7 +73,58 @@ export const userDelete = createAsyncThunk<
   return null;
 });
 
-export interface UserState {
+export const findMembersInfo = createAsyncThunk<
+  IUser[],
+  string,
+  {
+    rejectValue: string;
+  }
+>('users/membersInfos', async function (userId, {rejectWithValue}) {
+  const response = await fetch(userEndpoints.findMembersInfo + userId);
+  const data: IUser[] | IServerError | string = await response.json();
+  let message = '';
+  if (!response.ok) {
+    if (typeof data === 'string') {
+      message = data;
+    } else if ('message' in data) {
+      message = data.message;
+    }
+  }
+
+  if (typeof data === 'string') {
+    return rejectWithValue(message);
+  }
+  if ('message' in data) {
+    return rejectWithValue(message);
+  }
+  return data;
+});
+
+export const getUsers = createAsyncThunk(
+  'users/users',
+  async function (_, {rejectWithValue}) {
+    const response = await fetch(userEndpoints.getUsers);
+    const data: IUser[] | IServerError | string = await response.json();
+    let message = '';
+    if (!response.ok) {
+      if (typeof data === 'string') {
+        message = data;
+      } else if ('message' in data) {
+        message = data.message;
+      }
+    }
+
+    if (typeof data === 'string') {
+      return rejectWithValue(message);
+    }
+    if ('message' in data) {
+      return rejectWithValue(message);
+    }
+    return data;
+  },
+);
+
+export interface IUserState {
   token: string;
   _id: string;
   username: string;
@@ -77,11 +133,25 @@ export interface UserState {
   error: string;
 }
 
-const initialState: UserState = {
+export interface IUserSliceState {
+  user: IUser;
+  membersInfos: IUser[];
+  users: IUser[];
+  status: string;
+  error: string;
+}
+
+const user: IUser = {
   token: '',
   _id: '',
   username: '',
   name: '',
+};
+
+const initialState: IUserSliceState = {
+  user,
+  membersInfos: [],
+  users: [],
   status: '',
   error: '',
 };
@@ -91,13 +161,13 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     setToken: (state, action: PayloadAction<string>) => {
-      state.token = action.payload;
+      state.user.token = action.payload;
     },
     setUserId: (state, action: PayloadAction<string>) => {
-      state._id = action.payload;
+      state.user._id = action.payload;
     },
     logout: state => {
-      state._id = '';
+      state.user._id = '';
     },
   },
   extraReducers(builder) {
@@ -108,16 +178,10 @@ export const userSlice = createSlice({
       })
       .addCase(userAuthentication.fulfilled, (state, action) => {
         state.status = 'resolved';
-        state._id = action.payload._id;
-        state.token = action.payload.token;
-        state.username = action.payload.username;
-        state.name = action.payload.name;
-      })
-      .addCase(userAuthentication.rejected, (state, action) => {
-        if (action.payload) {
-          state.error = action.payload;
-        }
-        state.status = 'error';
+        state.user._id = action.payload._id;
+        state.user.token = action.payload.token;
+        state.user.username = action.payload.username;
+        state.user.name = action.payload.name;
       })
       .addCase(userDelete.pending, state => {
         state.status = 'pending';
@@ -125,13 +189,29 @@ export const userSlice = createSlice({
       })
       .addCase(userDelete.fulfilled, state => {
         state.status = 'resolved';
-        state._id = '';
+        state.user._id = '';
       })
-      .addCase(userDelete.rejected, (state, action) => {
-        if (action.payload) {
-          state.error = action.payload;
-        }
+      .addCase(findMembersInfo.pending, state => {
+        state.status = 'pending';
+        state.error = '';
+      })
+      .addCase(findMembersInfo.fulfilled, (state, action) => {
+        state.status = 'resolved';
+        state.error = '';
+        state.membersInfos = action.payload;
+      })
+      .addCase(getUsers.pending, state => {
+        state.status = 'pending';
+        state.error = '';
+      })
+      .addCase(getUsers.fulfilled, (state, action) => {
+        state.status = 'resolved';
+        state.error = '';
+        state.users = action.payload.filter(item => item._id !== user._id);
+      })
+      .addMatcher(isError, (state, action: PayloadAction<string>) => {
         state.status = 'error';
+        state.error = action.payload;
       });
   },
 });
@@ -139,3 +219,7 @@ export const userSlice = createSlice({
 export const {logout} = userSlice.actions;
 
 export default userSlice.reducer;
+
+function isError(action: AnyAction) {
+  return action.type.endsWith('rejected');
+}
