@@ -1,13 +1,16 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {FlatList, ListRenderItemInfo, StyleSheet, View} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {userEndpoints} from '../../@constants/apiEndpoint';
-import {ChatRoomNavigationProp, IChat, IUser} from '../../@types/common';
+import {ChatRoomNavigationProp, IChat} from '../../@types/common';
 import {useAppDispatch, useAppSelector} from '../../hooks/storeHooks';
 import {setCurrentChat} from '../../store/slices/chat/chatSlice';
 import {selectSortedChats} from '../../store/slices/chat/selectors';
-import {selectUser} from '../../store/slices/user/selectors';
+import {
+  selectFilteredUsersInfos,
+  selectUser,
+} from '../../store/slices/user/selectors';
+import {findMembersInfo} from '../../store/slices/user/userSlice';
 import ChatsListItem from '../ChatsListItem';
 
 function ChatsList() {
@@ -15,16 +18,18 @@ function ChatsList() {
   const navigation = useNavigation<ChatRoomNavigationProp>();
   const chats = useAppSelector(selectSortedChats);
   const user = useAppSelector(selectUser);
-  const [usersInfo, setUsersInfo] = useState<IUser[]>([]);
+  //const [usersInfo, setUsersInfo] = useState<IUser[]>([]);
+  const usersInfo = useAppSelector(selectFilteredUsersInfos);
   useEffect(() => {
-    async function fetchUsers() {
-      const response = await fetch(userEndpoints.findMembersInfo + user._id);
-      const memberInfo: IUser[] = await response.json();
-      const filtered = memberInfo.filter(m => m !== null);
-      setUsersInfo(filtered);
-    }
-    fetchUsers();
-  }, [user._id, chats]);
+    // async function fetchUsers() {
+    //   const response = await fetch(userEndpoints.findMembersInfo + user._id);
+    //   const memberInfo: IUser[] = await response.json();
+    //   const filtered = memberInfo.filter(m => m !== null);
+    //   setUsersInfo(filtered);
+    // }
+    // fetchUsers();
+    dispatch(findMembersInfo(user._id));
+  }, [user._id, chats, dispatch]);
 
   console.log(chats, 'CHATS');
 
