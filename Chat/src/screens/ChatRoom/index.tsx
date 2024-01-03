@@ -27,7 +27,6 @@ function ChatRoom({route, navigation}: ChatRoomProps) {
   const secondUser = useAppSelector(selectUsers).find(
     u => u._id === secondUserId,
   )!;
-  console.log(secondUser, 'USERIDUSERIDUSERID');
   const currentChatId = useAppSelector(selectCurrentChatId);
 
   // useEffect(() => {
